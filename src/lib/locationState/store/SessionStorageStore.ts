@@ -25,4 +25,11 @@ export class SessionStorageStore<T extends StoreState> implements Store<T> {
     this.listeners[name]?.forEach((listener) => listener());
     this.state[name] = value;
   }
+
+  navigationListener(key: string) {
+    const value = sessionStorage.getItem(`__location_state_${key}`);
+    if (value !== null) {
+      this.state = JSON.parse(value) as T;
+    }
+  }
 }
