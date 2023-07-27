@@ -1,27 +1,27 @@
-import type { Store, StoreState } from "./type";
+import type { Store } from "./type";
 
-export class SessionStorageStore<T extends StoreState> implements Store<T> {
-  private listeners: Record<keyof T, Array<() => void>>;
+export class SessionStorageStore implements Store {
+  private readonly listeners: Record<string, Array<() => void>>;
 
-  constructor(private state: T) {
+  constructor(private state: Record<string, unknown>) {
     this.listeners = Object.keys(state).reduce(
       (acc, key) => {
-        acc[key as keyof T] = [];
+        acc[key] = [];
         return acc;
       },
       {} as typeof this.listeners,
     );
   }
 
-  subscribe<K extends keyof T>(name: K, listener: () => void) {
+  subscribe(name: string, listener: () => void) {
     this.listeners[name].push(listener);
   }
 
-  get<K extends keyof T>(name: K): T[K] {
+  get(name: string) {
     return this.state[name];
   }
 
-  set<K extends keyof T>(name: K, value: T[K]) {
+  set(name: string, value: unknown) {
     this.listeners[name]?.forEach((listener) => listener());
     this.state[name] = value;
   }
@@ -29,7 +29,7 @@ export class SessionStorageStore<T extends StoreState> implements Store<T> {
   navigationListener(key: string) {
     const value = sessionStorage.getItem(`__location_state_${key}`);
     if (value !== null) {
-      this.state = JSON.parse(value) as T;
+      this.state = JSON.parse(value);
     }
   }
 }

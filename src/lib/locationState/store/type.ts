@@ -1,11 +1,11 @@
 export type StoreState = Record<string, unknown>;
 
-export type Store<T extends StoreState> = {
-  subscribe<K extends keyof T>(name: K, listener: () => void): void;
+export type Store = {
+  subscribe(name: string, listener: () => void): void;
 
-  get<K extends keyof T>(name: K): T[K];
+  get(name: string): unknown;
 
-  set<K extends keyof T>(name: K, value: T[K]): void;
+  set(name: string, value: unknown): void;
 
   navigationListener(key: string): void;
 };
