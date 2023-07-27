@@ -31,7 +31,7 @@ test("After updating a slice, the updated value can be obtained.", () => {
   expect(store.get("foo")).toBe("updated");
 });
 
-test("listener is called when updating slice", () => {
+test("listener is called when updating slice.", () => {
   // Arrange
   const store = new SessionStorageStore();
   const listener = jest.fn();
@@ -42,7 +42,33 @@ test("listener is called when updating slice", () => {
   expect(listener).toBeCalledTimes(1);
 });
 
-test("On navigation events, if the value of the corresponding key is in sessionStorage, then slice is the value in storage.", () => {
+test("store.get in the listener to get the latest value.", () => {
+  // Arrange
+  expect.assertions(2);
+  const store = new SessionStorageStore();
+  const listener = jest.fn(() => {
+    expect(store.get("foo")).toBe("updated");
+  });
+  store.subscribe("foo", listener);
+  // Act
+  store.set("foo", "updated");
+  // Assert
+  expect(listener).toBeCalledTimes(1);
+});
+
+test("unsubscribed listeners are not called when updating slices.", () => {
+  // Arrange
+  const store = new SessionStorageStore();
+  const listener = jest.fn();
+  const unsubscribe = store.subscribe("foo", listener);
+  unsubscribe();
+  // Act
+  store.set("foo", "updated");
+  // Assert
+  expect(listener).not.toBeCalled();
+});
+
+test("On location change events, if the value of the corresponding key is in sessionStorage, then slice is the value in storage.", () => {
   // Arrange
   const navigationKey = "__n";
   sessionStorageMock.getItem.mockReturnValueOnce(

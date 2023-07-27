@@ -2,13 +2,16 @@ import type { Store } from "./type";
 
 export class SessionStorageStore implements Store {
   private state: Record<string, unknown> = {};
-  private readonly listeners: Record<string, Array<() => void>> = {};
+  private listeners: Record<string, Array<() => void>> = {};
 
   constructor() {}
 
   subscribe(name: string, listener: () => void) {
     this.listeners[name] ??= [];
     this.listeners[name].push(listener);
+    return () => {
+      this.listeners = {};
+    };
   }
 
   get(name: string) {
@@ -16,8 +19,8 @@ export class SessionStorageStore implements Store {
   }
 
   set(name: string, value: unknown) {
-    this.listeners[name]?.forEach((listener) => listener());
     this.state[name] = value;
+    this.listeners[name]?.forEach((listener) => listener());
   }
 
   onLocationChange(key: string) {

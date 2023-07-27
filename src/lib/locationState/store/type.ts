@@ -1,7 +1,5 @@
-export type StoreState = Record<string, unknown>;
-
 export type Store = {
-  subscribe(name: string, listener: () => void): void;
+  subscribe(name: string, listener: () => void): () => void;
 
   get(name: string): unknown;
 
