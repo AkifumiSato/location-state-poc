@@ -7,5 +7,5 @@ export type Store = {
 
   set(name: string, value: unknown): void;
 
-  navigationListener(key: string): void;
+  onLocationChange(key: string): void;
 };

@@ -13,37 +13,27 @@ beforeEach(() => {
   sessionStorageMock.setItem.mockClear();
 });
 
-test("When not updated, the value specified in the initial value is obtained.", () => {
+test("If Storage is empty, the initial value is null.", () => {
   // Arrange
-  const store = new SessionStorageStore({
-    foo: "bar",
-    baz: "qux",
-  });
+  const store = new SessionStorageStore();
   // Act
   const slice = store.get("foo");
   // Assert
-  expect(slice).toBe("bar");
+  expect(slice).toBeNull();
 });
 
 test("After updating a slice, the updated value can be obtained.", () => {
   // Arrange
-  const store = new SessionStorageStore({
-    foo: "bar",
-    baz: "qux",
-  });
-  store.set("foo", "updated");
+  const store = new SessionStorageStore();
   // Act
-  const slice = store.get("foo");
+  store.set("foo", "updated");
   // Assert
-  expect(slice).toBe("updated");
+  expect(store.get("foo")).toBe("updated");
 });
 
 test("listener is called when updating slice", () => {
   // Arrange
-  const store = new SessionStorageStore({
-    foo: "bar",
-    baz: "qux",
-  });
+  const store = new SessionStorageStore();
   const listener = jest.fn();
   store.subscribe("foo", listener);
   // Act
@@ -58,12 +48,9 @@ test("On navigation events, if the value of the corresponding key is in sessionS
   sessionStorageMock.getItem.mockReturnValueOnce(
     JSON.stringify({ foo: "storage value" }),
   );
-  const store = new SessionStorageStore({
-    foo: "bar",
-    baz: "qux",
-  });
+  const store = new SessionStorageStore();
   // Act
-  store.navigationListener(navigationKey);
+  store.onLocationChange(navigationKey);
   // Assert
   expect(store.get("foo")).toBe("storage value");
   expect(sessionStorageMock.getItem).toHaveBeenCalledTimes(1);
