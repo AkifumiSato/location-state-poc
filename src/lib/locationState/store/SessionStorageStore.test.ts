@@ -1,7 +1,7 @@
-import { SessionStorageStore } from "./SessionStorageStore";
+import { locationKeyPrefix, SessionStorageStore } from "./SessionStorageStore";
 
 const sessionStorageMock = {
-  getItem: jest.fn(),
+  getItem: jest.fn().mockReturnValue(null),
   setItem: jest.fn(),
 };
 Object.defineProperty(window, "sessionStorage", {
@@ -70,7 +70,7 @@ test("unsubscribed listeners are not called when updating slices.", () => {
 
 test("On location change events, if the value of the corresponding key is in sessionStorage, then slice is the value in storage.", () => {
   // Arrange
-  const navigationKey = "__n";
+  const navigationKey = "current_location";
   sessionStorageMock.getItem.mockReturnValueOnce(
     JSON.stringify({ foo: "storage value" }),
   );
@@ -81,6 +81,22 @@ test("On location change events, if the value of the corresponding key is in ses
   expect(store.get("foo")).toBe("storage value");
   expect(sessionStorageMock.getItem).toHaveBeenCalledTimes(1);
   expect(sessionStorageMock.getItem).toHaveBeenCalledWith(
-    `__location_state_${navigationKey}`,
+    `${locationKeyPrefix}${navigationKey}`,
+  );
+});
+
+test("In the location change event, the state is saved in sessionStorage with the previous Location key.", () => {
+  // Arrange
+  const currentLocationKey = "current_location";
+  const store = new SessionStorageStore();
+  store.set("foo", "updated");
+  store.onLocationChange(currentLocationKey);
+  // Act
+  store.onLocationChange("next_location");
+  // Assert
+  expect(sessionStorageMock.setItem).toHaveBeenCalledTimes(1);
+  expect(sessionStorageMock.setItem).toHaveBeenCalledWith(
+    `${locationKeyPrefix}${currentLocationKey}`,
+    JSON.stringify({ foo: "updated" }),
   );
 });
