@@ -39,6 +39,8 @@ export class SessionStorageStore implements Store {
     const value = sessionStorage.getItem(this.createStorageKey(locationKey));
     if (value !== null) {
       this.state = JSON.parse(value);
+    } else {
+      this.state = {};
     }
   }
 

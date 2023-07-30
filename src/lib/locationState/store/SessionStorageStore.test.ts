@@ -99,8 +99,8 @@ test("In the location change event, the state is saved in sessionStorage with th
   // Arrange
   const currentLocationKey = "current_location";
   const store = new SessionStorageStore();
-  store.set("foo", "updated");
   store.onLocationChange(currentLocationKey);
+  store.set("foo", "updated");
   // Act
   store.onLocationChange("next_location");
   // Assert
@@ -109,4 +109,5 @@ test("In the location change event, the state is saved in sessionStorage with th
     `${locationKeyPrefix}${currentLocationKey}`,
     JSON.stringify({ foo: "updated" }),
   );
+  expect(store.get("foo")).toBeNull();
 });
