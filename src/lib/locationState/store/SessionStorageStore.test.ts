@@ -19,7 +19,7 @@ test("If Storage is empty, the initial value is null.", () => {
   // Act
   const slice = store.get("foo");
   // Assert
-  expect(slice).toBeNull();
+  expect(slice).toBeUndefined();
 });
 
 test("After updating a slice, the updated value can be obtained.", () => {
@@ -109,5 +109,5 @@ test("In the location change event, the state is saved in sessionStorage with th
     `${locationKeyPrefix}${currentLocationKey}`,
     JSON.stringify({ foo: "updated" }),
   );
-  expect(store.get("foo")).toBeNull();
+  expect(store.get("foo")).toBeUndefined();
 });

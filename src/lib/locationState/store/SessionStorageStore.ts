@@ -20,7 +20,7 @@ export class SessionStorageStore implements Store {
   }
 
   get(name: string) {
-    return this.state[name] ?? null;
+    return this.state[name];
   }
 
   set(name: string, value: unknown) {
