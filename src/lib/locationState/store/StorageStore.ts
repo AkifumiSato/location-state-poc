@@ -3,12 +3,12 @@ import type { Store } from "./type";
 
 export const locationKeyPrefix = "__location_state_";
 
-export class SessionStorageStore implements Store {
+export class StorageStore implements Store {
   private currentKey: string | null = null;
   private state: Record<string, unknown> = {};
   private listeners: Map<string, Set<Listener>> = new Map();
 
-  constructor() {}
+  constructor(private readonly storage: Storage) {}
 
   subscribe(name: string, listener: () => void) {
     const listeners = this.listeners.get(name) ?? new Set();
@@ -30,13 +30,13 @@ export class SessionStorageStore implements Store {
 
   onLocationChange(locationKey: string) {
     if (this.currentKey) {
-      sessionStorage.setItem(
+      this.storage.setItem(
         this.createStorageKey(this.currentKey),
         JSON.stringify(this.state),
       );
     }
     this.currentKey = locationKey;
-    const value = sessionStorage.getItem(this.createStorageKey(locationKey));
+    const value = this.storage.getItem(this.createStorageKey(locationKey));
     if (value !== null) {
       this.state = JSON.parse(value);
     } else {

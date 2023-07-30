@@ -1,21 +1,21 @@
-import { locationKeyPrefix, SessionStorageStore } from "./SessionStorageStore";
+import { locationKeyPrefix, StorageStore } from "./StorageStore";
 
-const sessionStorageMock = {
+const storageMock = {
   getItem: jest.fn().mockReturnValue(null),
   setItem: jest.fn(),
 };
-Object.defineProperty(window, "sessionStorage", {
-  value: sessionStorageMock,
-});
 
 beforeEach(() => {
-  sessionStorageMock.getItem.mockClear();
-  sessionStorageMock.setItem.mockClear();
+  storageMock.getItem.mockClear();
+  storageMock.setItem.mockClear();
 });
+
+// partial mock storage to be Storage type
+const storage = storageMock as unknown as Storage;
 
 test("If Storage is empty, the initial value is null.", () => {
   // Arrange
-  const store = new SessionStorageStore();
+  const store = new StorageStore(storage);
   // Act
   const slice = store.get("foo");
   // Assert
@@ -24,7 +24,7 @@ test("If Storage is empty, the initial value is null.", () => {
 
 test("After updating a slice, the updated value can be obtained.", () => {
   // Arrange
-  const store = new SessionStorageStore();
+  const store = new StorageStore(storage);
   // Act
   store.set("foo", "updated");
   // Assert
@@ -33,7 +33,7 @@ test("After updating a slice, the updated value can be obtained.", () => {
 
 test("listener is called when updating slice.", () => {
   // Arrange
-  const store = new SessionStorageStore();
+  const store = new StorageStore(storage);
   const listener = jest.fn();
   store.subscribe("foo", listener);
   // Act
@@ -45,7 +45,7 @@ test("listener is called when updating slice.", () => {
 test("store.get in the listener to get the latest value.", () => {
   // Arrange
   expect.assertions(4);
-  const store = new SessionStorageStore();
+  const store = new StorageStore(storage);
   const listener1 = jest.fn(() => {
     expect(store.get("foo")).toBe("updated");
   });
@@ -63,7 +63,7 @@ test("store.get in the listener to get the latest value.", () => {
 
 test("unsubscribed listeners are not called when updating slices.", () => {
   // Arrange
-  const store = new SessionStorageStore();
+  const store = new StorageStore(storage);
   const listeners = {
     unsubscribeTarget: jest.fn(),
     other: jest.fn(),
@@ -78,34 +78,34 @@ test("unsubscribed listeners are not called when updating slices.", () => {
   expect(listeners.other).toBeCalled();
 });
 
-test("On location change events, if the value of the corresponding key is in sessionStorage, then slice is the value in storage.", () => {
+test("On location change events, if the value of the corresponding key is in Storage, then slice is the value in storage.", () => {
   // Arrange
   const navigationKey = "current_location";
-  sessionStorageMock.getItem.mockReturnValueOnce(
+  storageMock.getItem.mockReturnValueOnce(
     JSON.stringify({ foo: "storage value" }),
   );
-  const store = new SessionStorageStore();
+  const store = new StorageStore(storage);
   // Act
   store.onLocationChange(navigationKey);
   // Assert
   expect(store.get("foo")).toBe("storage value");
-  expect(sessionStorageMock.getItem).toHaveBeenCalledTimes(1);
-  expect(sessionStorageMock.getItem).toHaveBeenCalledWith(
+  expect(storageMock.getItem).toHaveBeenCalledTimes(1);
+  expect(storageMock.getItem).toHaveBeenCalledWith(
     `${locationKeyPrefix}${navigationKey}`,
   );
 });
 
-test("In the location change event, the state is saved in sessionStorage with the previous Location key.", () => {
+test("In the location change event, the state is saved in Storage with the previous Location key.", () => {
   // Arrange
   const currentLocationKey = "current_location";
-  const store = new SessionStorageStore();
+  const store = new StorageStore(storage);
   store.onLocationChange(currentLocationKey);
   store.set("foo", "updated");
   // Act
   store.onLocationChange("next_location");
   // Assert
-  expect(sessionStorageMock.setItem).toHaveBeenCalledTimes(1);
-  expect(sessionStorageMock.setItem).toHaveBeenCalledWith(
+  expect(storageMock.setItem).toHaveBeenCalledTimes(1);
+  expect(storageMock.setItem).toHaveBeenCalledWith(
     `${locationKeyPrefix}${currentLocationKey}`,
     JSON.stringify({ foo: "updated" }),
   );
