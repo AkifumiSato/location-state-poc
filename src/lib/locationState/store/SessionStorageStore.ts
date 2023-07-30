@@ -1,3 +1,4 @@
+import { Listener } from "./type";
 import type { Store } from "./type";
 
 export const locationKeyPrefix = "__location_state_";
@@ -5,15 +6,16 @@ export const locationKeyPrefix = "__location_state_";
 export class SessionStorageStore implements Store {
   private currentKey: string | null = null;
   private state: Record<string, unknown> = {};
-  private listeners: Record<string, Array<() => void>> = {};
+  private listeners: Map<string, Set<Listener>> = new Map();
 
   constructor() {}
 
   subscribe(name: string, listener: () => void) {
-    this.listeners[name] ??= [];
-    this.listeners[name].push(listener);
+    const listeners = this.listeners.get(name) ?? new Set();
+    listeners.add(listener);
+    this.listeners.set(name, listeners);
     return () => {
-      this.listeners = {};
+      this.listeners.get(name)?.delete(listener);
     };
   }
 
@@ -23,7 +25,7 @@ export class SessionStorageStore implements Store {
 
   set(name: string, value: unknown) {
     this.state[name] = value;
-    this.listeners[name]?.forEach((listener) => listener());
+    this.listeners.get(name)?.forEach((listener) => listener());
   }
 
   onLocationChange(locationKey: string) {

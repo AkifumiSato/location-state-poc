@@ -44,28 +44,38 @@ test("listener is called when updating slice.", () => {
 
 test("store.get in the listener to get the latest value.", () => {
   // Arrange
-  expect.assertions(2);
+  expect.assertions(4);
   const store = new SessionStorageStore();
-  const listener = jest.fn(() => {
+  const listener1 = jest.fn(() => {
     expect(store.get("foo")).toBe("updated");
   });
-  store.subscribe("foo", listener);
+  const listener2 = jest.fn(() => {
+    expect(store.get("foo")).toBe("updated");
+  });
+  store.subscribe("foo", listener1);
+  store.subscribe("foo", listener2);
   // Act
   store.set("foo", "updated");
   // Assert
-  expect(listener).toBeCalledTimes(1);
+  expect(listener1).toBeCalledTimes(1);
+  expect(listener2).toBeCalledTimes(1);
 });
 
 test("unsubscribed listeners are not called when updating slices.", () => {
   // Arrange
   const store = new SessionStorageStore();
-  const listener = jest.fn();
-  const unsubscribe = store.subscribe("foo", listener);
+  const listeners = {
+    unsubscribeTarget: jest.fn(),
+    other: jest.fn(),
+  };
+  const unsubscribe = store.subscribe("foo", listeners.unsubscribeTarget);
+  store.subscribe("foo", listeners.other);
   unsubscribe();
   // Act
   store.set("foo", "updated");
   // Assert
-  expect(listener).not.toBeCalled();
+  expect(listeners.unsubscribeTarget).not.toBeCalled();
+  expect(listeners.other).toBeCalled();
 });
 
 test("On location change events, if the value of the corresponding key is in sessionStorage, then slice is the value in storage.", () => {
