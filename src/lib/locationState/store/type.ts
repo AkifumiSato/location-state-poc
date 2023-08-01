@@ -7,5 +7,7 @@ export type Store = {
 
   set(name: string, value: unknown): void;
 
-  onLocationChange(key: string): void;
+  load(key: string): void;
+
+  save(): void;
 };

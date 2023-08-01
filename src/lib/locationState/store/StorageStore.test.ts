@@ -95,7 +95,7 @@ test("The listener is unsubscribed by the `unsubscribed`, it will no longer be c
   expect(listeners.other).toBeCalled();
 });
 
-test("On location change events, if the value of the corresponding key is in Storage, then slice is the value in storage.", () => {
+test("On `load` called, if the value of the corresponding key is in Storage, then slice is the value in storage.", () => {
   // Arrange
   const navigationKey = "current_location";
   storageMock.getItem.mockReturnValueOnce(
@@ -103,7 +103,7 @@ test("On location change events, if the value of the corresponding key is in Sto
   );
   const store = new StorageStore(storage);
   // Act
-  store.onLocationChange(navigationKey);
+  store.load(navigationKey);
   // Assert
   expect(store.get("foo")).toBe("storage value");
   expect(storageMock.getItem).toHaveBeenCalledTimes(1);
@@ -112,19 +112,18 @@ test("On location change events, if the value of the corresponding key is in Sto
   );
 });
 
-test("In the location change event, the state is saved in Storage with the previous Location key.", () => {
+test("On `save` called, the state is saved in Storage with the previous Location key.", () => {
   // Arrange
   const currentLocationKey = "current_location";
   const store = new StorageStore(storage);
-  store.onLocationChange(currentLocationKey);
+  store.load(currentLocationKey);
   store.set("foo", "updated");
   // Act
-  store.onLocationChange("next_location");
+  store.save();
   // Assert
   expect(storageMock.setItem).toHaveBeenCalledTimes(1);
   expect(storageMock.setItem).toHaveBeenCalledWith(
     `${locationKeyPrefix}${currentLocationKey}`,
     JSON.stringify({ foo: "updated" }),
   );
-  expect(store.get("foo")).toBeUndefined();
 });

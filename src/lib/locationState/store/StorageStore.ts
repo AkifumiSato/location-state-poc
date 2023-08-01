@@ -37,13 +37,7 @@ export class StorageStore implements Store {
     this.listeners.get(name)?.forEach((listener) => listener());
   }
 
-  onLocationChange(locationKey: string) {
-    if (this.currentKey) {
-      this.storage.setItem(
-        this.createStorageKey(this.currentKey),
-        JSON.stringify(this.state),
-      );
-    }
+  load(locationKey: string) {
     this.currentKey = locationKey;
     const value = this.storage.getItem(this.createStorageKey(locationKey));
     if (value !== null) {
@@ -51,6 +45,18 @@ export class StorageStore implements Store {
     } else {
       this.state = {};
     }
+  }
+
+  save() {
+    if (!this.currentKey) {
+      throw new Error(
+        "StoreStorage's currentKey is null. Please call load() first.",
+      );
+    }
+    this.storage.setItem(
+      this.createStorageKey(this.currentKey),
+      JSON.stringify(this.state),
+    );
   }
 
   private createStorageKey(key: string) {
