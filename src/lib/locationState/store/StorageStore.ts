@@ -11,12 +11,21 @@ export class StorageStore implements Store {
   constructor(private readonly storage: Storage) {}
 
   subscribe(name: string, listener: () => void) {
-    const listeners = this.listeners.get(name) ?? new Set();
-    listeners.add(listener);
-    this.listeners.set(name, listeners);
-    return () => {
-      this.listeners.get(name)?.delete(listener);
-    };
+    const listeners = this.listeners.get(name);
+    if (listeners) {
+      listeners.add(listener);
+    } else {
+      this.listeners.set(name, new Set([listener]));
+    }
+    return () => this.unsubscribe(name, listener);
+  }
+
+  unsubscribe(name: string, listener: Listener) {
+    const listeners = this.listeners.get(name);
+    listeners?.delete(listener);
+    if (listeners?.size === 0) {
+      this.listeners.delete(name);
+    }
   }
 
   get(name: string) {

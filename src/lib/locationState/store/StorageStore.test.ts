@@ -61,7 +61,7 @@ test("store.get in the listener to get the latest value.", () => {
   expect(listener2).toBeCalledTimes(1);
 });
 
-test("unsubscribed listeners are not called when updating slices.", () => {
+test("The listener is unsubscribed by the returned callback, it will no longer be called when the slice is updated.", () => {
   // Arrange
   const store = new StorageStore(storage);
   const listeners = {
@@ -71,6 +71,23 @@ test("unsubscribed listeners are not called when updating slices.", () => {
   const unsubscribe = store.subscribe("foo", listeners.unsubscribeTarget);
   store.subscribe("foo", listeners.other);
   unsubscribe();
+  // Act
+  store.set("foo", "updated");
+  // Assert
+  expect(listeners.unsubscribeTarget).not.toBeCalled();
+  expect(listeners.other).toBeCalled();
+});
+
+test("The listener is unsubscribed by the `unsubscribed`, it will no longer be called when the slice is updated.", () => {
+  // Arrange
+  const store = new StorageStore(storage);
+  const listeners = {
+    unsubscribeTarget: jest.fn(),
+    other: jest.fn(),
+  };
+  store.subscribe("foo", listeners.unsubscribeTarget);
+  store.subscribe("foo", listeners.other);
+  store.unsubscribe("foo", listeners.unsubscribeTarget);
   // Act
   store.set("foo", "updated");
   // Assert
