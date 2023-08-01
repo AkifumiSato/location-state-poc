@@ -34,6 +34,7 @@ export class StorageStore implements Store {
 
   set(name: string, value: unknown) {
     this.state[name] = value;
+    // todo: Consider notifying all listeners
     this.listeners.get(name)?.forEach((listener) => listener());
   }
 
