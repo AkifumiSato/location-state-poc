@@ -78,23 +78,6 @@ test("The listener is unsubscribed by the returned callback, it will no longer b
   expect(listeners.other).toBeCalled();
 });
 
-test("The listener is unsubscribed by the `unsubscribed`, it will no longer be called when the slice is updated.", () => {
-  // Arrange
-  const store = new StorageStore(storage);
-  const listeners = {
-    unsubscribeTarget: jest.fn(),
-    other: jest.fn(),
-  };
-  store.subscribe("foo", listeners.unsubscribeTarget);
-  store.subscribe("foo", listeners.other);
-  store.unsubscribe("foo", listeners.unsubscribeTarget);
-  // Act
-  store.set("foo", "updated");
-  // Assert
-  expect(listeners.unsubscribeTarget).not.toBeCalled();
-  expect(listeners.other).toBeCalled();
-});
-
 test("On `load` called, if the value of the corresponding key is in Storage, then slice is the value in storage.", () => {
   // Arrange
   const navigationKey = "current_location";

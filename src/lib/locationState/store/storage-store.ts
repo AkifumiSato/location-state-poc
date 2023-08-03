@@ -20,7 +20,7 @@ export class StorageStore implements Store {
     return () => this.unsubscribe(name, listener);
   }
 
-  unsubscribe(name: string, listener: Listener) {
+  private unsubscribe(name: string, listener: Listener) {
     const listeners = this.listeners.get(name);
     listeners?.delete(listener);
     if (listeners?.size === 0) {
