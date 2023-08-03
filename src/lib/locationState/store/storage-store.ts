@@ -34,18 +34,20 @@ export class StorageStore implements Store {
 
   set(name: string, value: unknown) {
     this.state[name] = value;
-    // todo: Consider notifying all listeners
     this.listeners.get(name)?.forEach((listener) => listener());
   }
 
   load(locationKey: string) {
+    if (this.currentKey === locationKey) return;
     this.currentKey = locationKey;
     const value = this.storage.getItem(this.createStorageKey(locationKey));
     if (value !== null) {
+      // todo: impl JSON or Transit
       this.state = JSON.parse(value);
     } else {
       this.state = {};
     }
+    // todo: Consider notifying all listeners
   }
 
   save() {
