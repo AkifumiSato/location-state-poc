@@ -40,7 +40,7 @@ export class StorageStore implements Store {
   load(locationKey: string) {
     if (this.currentKey === locationKey) return;
     this.currentKey = locationKey;
-    const value = this.storage.getItem(this.createStorageKey(locationKey));
+    const value = this.storage.getItem(this.createStorageKey());
     if (value !== null) {
       // todo: impl JSON or Transit
       this.state = JSON.parse(value);
@@ -56,13 +56,10 @@ export class StorageStore implements Store {
         "StoreStorage's currentKey is null. Please call load() first.",
       );
     }
-    this.storage.setItem(
-      this.createStorageKey(this.currentKey),
-      JSON.stringify(this.state),
-    );
+    this.storage.setItem(this.createStorageKey(), JSON.stringify(this.state));
   }
 
-  private createStorageKey(key: string) {
-    return `${locationKeyPrefix}${key}`;
+  private createStorageKey() {
+    return `${locationKeyPrefix}${this.currentKey}`;
   }
 }
