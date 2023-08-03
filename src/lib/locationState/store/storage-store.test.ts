@@ -3,17 +3,19 @@ import { locationKeyPrefix, StorageStore } from "./storage-store";
 const storageMock = {
   getItem: jest.fn().mockReturnValue(null),
   setItem: jest.fn(),
+  removeItem: jest.fn(),
 };
 
 beforeEach(() => {
   storageMock.getItem.mockClear();
   storageMock.setItem.mockClear();
+  storageMock.removeItem.mockClear();
 });
 
 // partial mock storage to be Storage type
 const storage = storageMock as unknown as Storage;
 
-test("If Storage is empty, the initial value is null.", () => {
+test("If Storage is empty, the initial value is undefined.", () => {
   // Arrange
   const store = new StorageStore(storage);
   // Act
@@ -109,4 +111,15 @@ test("On `save` called, the state is saved in Storage with the previous Location
     `${locationKeyPrefix}${currentLocationKey}`,
     JSON.stringify({ foo: "updated" }),
   );
+});
+
+test("Calling `save` with empty will remove the Storage with Location key.", () => {
+  // Arrange
+  const currentLocationKey = "current_location";
+  const store = new StorageStore(storage);
+  store.load(currentLocationKey); // set key
+  // Act
+  store.save();
+  // Assert
+  expect(storageMock.removeItem).toHaveBeenCalledTimes(1);
 });

@@ -33,6 +33,10 @@ export class StorageStore implements Store {
   }
 
   set(name: string, value: unknown) {
+    if (typeof value === "undefined") {
+      delete this.state[name];
+      return;
+    }
     this.state[name] = value;
     this.listeners.get(name)?.forEach((listener) => listener());
   }
@@ -52,9 +56,11 @@ export class StorageStore implements Store {
 
   save() {
     if (!this.currentKey) {
-      throw new Error(
-        "StoreStorage's currentKey is null. Please call load() first.",
-      );
+      return;
+    }
+    if (Object.keys(this.state).length === 0) {
+      this.storage.removeItem(this.createStorageKey());
+      return;
     }
     this.storage.setItem(this.createStorageKey(), JSON.stringify(this.state));
   }
