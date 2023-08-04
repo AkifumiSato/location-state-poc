@@ -1,4 +1,4 @@
-import { StorageStore } from "@/lib/locationState/store/storage-store";
+import { Store } from "@/lib/locationState/store/types";
 import {
   createContext,
   useCallback,
@@ -6,35 +6,41 @@ import {
   useSyncExternalStore,
 } from "react";
 
-export const StorageStoreContext = createContext<StorageStore | null>(null);
+export const LocationStoresContext = createContext<{
+  stores: Record<string, Store>;
+}>({ stores: {} });
 
 export const useLocationState = <T>({
   name,
   defaultValue,
+  storeName,
 }: {
   name: string;
   defaultValue: T;
+  storeName: string;
 }) => {
-  // todo: only session storage impl now
-  const storageStore = useContext(StorageStoreContext);
-  if (!storageStore) {
+  const { stores } = useContext(LocationStoresContext);
+  const store = stores[storeName];
+  if (!store) {
     // todo: fix message
     throw new Error("Provider is required");
   }
   const subscribe = useCallback(
-    (onStoreChange: () => void) => storageStore.subscribe(name, onStoreChange),
-    [name, storageStore],
+    (onStoreChange: () => void) => store.subscribe(name, onStoreChange),
+    [name, store],
   );
-  const getSnapshot = useCallback(
-    () => storageStore.get(name) as T,
-    [storageStore, name],
+  const getSnapshot = () => store.get(name) ?? defaultValue;
+  const getServerSnapshot = () => defaultValue;
+  const storeState = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
   );
-  const storeState = useSyncExternalStore(subscribe, getSnapshot);
   const setStoreState = useCallback(
     (value: T) => {
-      storageStore.set(name, value);
+      store.set(name, value);
     },
-    [name, storageStore],
+    [name, store],
   );
   return [storeState ?? defaultValue, setStoreState];
 };
