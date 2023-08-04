@@ -44,6 +44,18 @@ test("listener is called when updating slice.", () => {
   expect(listener).toBeCalledTimes(1);
 });
 
+test("listener is called even if updated with undefined.", () => {
+  // Arrange
+  const store = new StorageStore(storage);
+  store.set("foo", "updated");
+  const listener = jest.fn();
+  store.subscribe("foo", listener);
+  // Act
+  store.set("foo", undefined);
+  // Assert
+  expect(listener).toBeCalledTimes(1);
+});
+
 test("store.get in the listener to get the latest value.", () => {
   // Arrange
   expect.assertions(4);

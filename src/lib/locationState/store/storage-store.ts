@@ -35,9 +35,9 @@ export class StorageStore implements Store {
   set(name: string, value: unknown) {
     if (typeof value === "undefined") {
       delete this.state[name];
-      return;
+    } else {
+      this.state[name] = value;
     }
-    this.state[name] = value;
     this.listeners.get(name)?.forEach((listener) => listener());
   }
 
