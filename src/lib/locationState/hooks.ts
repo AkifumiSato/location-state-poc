@@ -29,12 +29,11 @@ export const useLocationState = <T>({
     (onStoreChange: () => void) => store.subscribe(name, onStoreChange),
     [name, store],
   );
-  const getSnapshot = () => store.get(name) ?? defaultValue;
-  const getServerSnapshot = () => defaultValue;
+  // `defaultValue` is assumed to always be the same value (for Objects, it must be memoized).
   const storeState = useSyncExternalStore(
     subscribe,
-    getSnapshot,
-    getServerSnapshot,
+    () => store.get(name) ?? defaultValue,
+    () => defaultValue,
   );
   const setStoreState = useCallback(
     (value: T) => {
