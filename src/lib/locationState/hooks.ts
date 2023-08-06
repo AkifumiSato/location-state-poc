@@ -41,5 +41,5 @@ export const useLocationState = <T>({
     },
     [name, store],
   );
-  return [storeState ?? defaultValue, setStoreState];
+  return [storeState, setStoreState];
 };
