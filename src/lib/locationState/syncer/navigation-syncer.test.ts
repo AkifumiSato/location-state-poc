@@ -1,4 +1,4 @@
-import { NavigationSyncer } from "@/lib/locationState/syncer/navigation-synver";
+import { NavigationSyncer } from "@/lib/locationState/syncer/navigation-syncer";
 import { Navigation as NavigationPolyfill } from "@virtualstate/navigation";
 
 test("Key changes when `navigation.currentEntry` changes.", () => {
