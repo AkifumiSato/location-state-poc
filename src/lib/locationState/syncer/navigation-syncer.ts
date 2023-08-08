@@ -25,7 +25,10 @@ export class NavigationSyncer implements Syncer {
           return;
         }
 
-        if (e.navigationType === "push" || e.navigationType === "replace") {
+        if (
+          (e as NavigateEvent).navigationType === "push" ||
+          (e as NavigateEvent).navigationType === "replace"
+        ) {
           listener(this.navigation.currentEntry?.key as string);
           this.lastPublishedEntryKey = this.navigation.currentEntry?.key;
         }
