@@ -19,24 +19,42 @@ test("Listener is called when `currententrychange` event and `event.navigationTy
   // Arrange
   const navigation = createNavigationMock("/");
   const navigationSyncer = new NavigationSyncer(navigation);
-  const listener = jest.fn();
-  navigationSyncer.sync({ listener, signal: new AbortController().signal });
+  const listener1 = jest.fn();
+  const listener2 = jest.fn();
+  navigationSyncer.sync({
+    listener: listener1,
+    signal: new AbortController().signal,
+  });
+  navigationSyncer.sync({
+    listener: listener2,
+    signal: new AbortController().signal,
+  });
   // Act
   navigation.navigate("/hoge");
   // Assert
-  expect(listener).toHaveBeenCalledTimes(1);
+  expect(listener1).toHaveBeenCalledTimes(1);
+  expect(listener2).toHaveBeenCalledTimes(1);
 });
 
 test("Listener is called when `currententrychange` event and `event.navigationType` is `replace`.", () => {
   // Arrange
   const navigation = createNavigationMock("/");
   const navigationSyncer = new NavigationSyncer(navigation);
-  const listener = jest.fn();
-  navigationSyncer.sync({ listener, signal: new AbortController().signal });
+  const listener1 = jest.fn();
+  const listener2 = jest.fn();
+  navigationSyncer.sync({
+    listener: listener1,
+    signal: new AbortController().signal,
+  });
+  navigationSyncer.sync({
+    listener: listener2,
+    signal: new AbortController().signal,
+  });
   // Act
   navigation.navigate("/hoge", { history: "replace" });
   // Assert
-  expect(listener).toHaveBeenCalledTimes(1);
+  expect(listener1).toHaveBeenCalledTimes(1);
+  expect(listener2).toHaveBeenCalledTimes(1);
 });
 
 test("Listener is not called when `currententrychange` event and `event.navigationType` is `reload`.", () => {

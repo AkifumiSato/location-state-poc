@@ -1,8 +1,6 @@
 import { Syncer } from "@/lib/locationState/syncer/navigation/types";
 
 export class NavigationSyncer implements Syncer {
-  private prevKey?: string;
-
   constructor(private readonly navigation?: Navigation) {}
 
   key(): string | undefined {
@@ -16,6 +14,7 @@ export class NavigationSyncer implements Syncer {
     listener: (key: string) => void;
     signal: AbortSignal;
   }): void {
+    let prevKey: string;
     this.navigation?.addEventListener(
       "currententrychange",
       (e) => {
@@ -25,14 +24,14 @@ export class NavigationSyncer implements Syncer {
         }
         // Since an Entry always exists at the time of `currententrychange, it is non-null.
         const currentKey = this.key()!;
-        if (this.prevKey === currentKey) {
+        if (prevKey === currentKey) {
           // `history.replace` may cause events to fire with the same key.
           // https://github.com/WICG/navigation-api#the-current-entry
           return;
         }
 
         listener(currentKey);
-        this.prevKey = currentKey;
+        prevKey = currentKey;
       },
       {
         signal,
