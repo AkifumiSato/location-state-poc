@@ -37,6 +37,14 @@ class PartialNavigation implements Partial<Navigation> {
     } as NavigationResult;
   }
 
+  reload() {
+    this.setEntryWithUrl(this.currentEntry?.url!);
+    this.dispatchEntryChangeEvent("reload");
+    return {
+      // not implemented
+    } as NavigationResult;
+  }
+
   private dispatchEntryChangeEvent(type: NavigationApiNavigationType) {
     const event = new PartialNavigateEvent(type) as NavigateEvent;
     const listeners = this.listenersMap.get("currententrychange");
@@ -56,12 +64,6 @@ class PartialNavigation implements Partial<Navigation> {
     } else {
       this.listenersMap.set(type, [listener]);
     }
-  }
-
-  reload() {
-    return {
-      // not implemented
-    } as NavigationResult;
   }
 }
 
