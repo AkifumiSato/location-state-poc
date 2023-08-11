@@ -1,4 +1,4 @@
-import { Syncer } from "@/lib/locationState/syncer/types";
+import { Syncer } from "@/lib/locationState/syncer/navigation/types";
 
 export class NavigationSyncer implements Syncer {
   private prevKey?: string;
