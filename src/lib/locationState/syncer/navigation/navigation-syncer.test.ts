@@ -61,12 +61,21 @@ test("Listener is not called when `currententrychange` event and `event.navigati
   // Arrange
   const navigation = createNavigationMock("/");
   const navigationSyncer = new NavigationSyncer(navigation);
-  const listener = jest.fn();
-  navigationSyncer.sync({ listener, signal: new AbortController().signal });
+  const listener1 = jest.fn();
+  const listener2 = jest.fn();
+  navigationSyncer.sync({
+    listener: listener1,
+    signal: new AbortController().signal,
+  });
+  navigationSyncer.sync({
+    listener: listener2,
+    signal: new AbortController().signal,
+  });
   // Act
   navigation.reload();
   // Assert
-  expect(listener).not.toHaveBeenCalled();
+  expect(listener1).not.toHaveBeenCalled();
+  expect(listener2).toHaveBeenCalled();
 });
 
 // abort does not work well, but the cause is unknown
@@ -74,12 +83,18 @@ test("After `abort`, listener is called when `currententrychange` event and `eve
   // Arrange
   const navigation = createNavigationMock("/");
   const navigationSyncer = new NavigationSyncer(navigation);
-  const listener = jest.fn();
+  const listener1 = jest.fn();
+  const listener2 = jest.fn();
   const controller = new AbortController();
-  navigationSyncer.sync({ listener, signal: controller.signal });
+  navigationSyncer.sync({ listener: listener1, signal: controller.signal });
+  navigationSyncer.sync({
+    listener: listener2,
+    signal: new AbortController().signal,
+  });
   controller.abort();
   // Act
   navigation.navigate("/hoge");
   // Assert
-  expect(listener).not.toHaveBeenCalled();
+  expect(listener1).not.toHaveBeenCalled();
+  expect(listener2).toHaveBeenCalled();
 });
