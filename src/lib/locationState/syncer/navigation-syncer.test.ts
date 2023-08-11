@@ -52,7 +52,7 @@ test("Listener is not called when `currententrychange` event and `event.navigati
 });
 
 // abort does not work well, but the cause is unknown
-test.skip("After `abort`, listener is called when `currententrychange` event and `event.navigationType` is `push`.", () => {
+test("After `abort`, listener is called when `currententrychange` event and `event.navigationType` is `push`.", () => {
   // Arrange
   const navigation = createNavigationMock("/");
   const navigationSyncer = new NavigationSyncer(navigation);

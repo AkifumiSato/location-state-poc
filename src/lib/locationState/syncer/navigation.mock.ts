@@ -16,7 +16,7 @@ class PartialNavigateEvent implements Partial<NavigateEvent> {
 
 class PartialNavigation implements Partial<Navigation> {
   currentEntry?: NavigationHistoryEntry;
-  private listenersMap = new Map<string, EventListener[]>();
+  private listenersMap = new Map<string, Set<EventListener>>();
 
   constructor(public currentUrl?: string) {
     this.setEntryWithUrl(currentUrl);
@@ -56,14 +56,18 @@ class PartialNavigation implements Partial<Navigation> {
   addEventListener(
     type: string,
     listener: EventListener,
-    _options?: AddEventListenerOptions,
+    { signal }: AddEventListenerOptions = {},
   ) {
     if (type !== "currententrychange") throw new Error("Not implemented");
     if (this.listenersMap.has(type)) {
-      this.listenersMap.get(type)?.push(listener);
+      this.listenersMap.get(type)?.add(listener);
     } else {
-      this.listenersMap.set(type, [listener]);
+      this.listenersMap.set(type, new Set([listener]));
     }
+
+    signal?.addEventListener("abort", () => {
+      this.listenersMap.get(type)?.delete(listener);
+    });
   }
 }
 
