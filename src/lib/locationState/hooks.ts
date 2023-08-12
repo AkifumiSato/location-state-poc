@@ -18,7 +18,7 @@ export const useLocationState = <T>({
 }: {
   name: string;
   defaultValue: T;
-  storeName: StoreName;
+  storeName: StoreName | string;
 }): [T, (value: T) => void] => {
   const { stores } = useContext(LocationStoresContext);
   const store = stores[storeName];
