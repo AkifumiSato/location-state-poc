@@ -1,13 +1,14 @@
 import { useLocationState } from "@/lib/locationState/hooks";
-import { LocationStateProvider } from "@/lib/locationState/Provider";
+import { NavigationSyncerProvider } from "@/lib/locationState/Provider";
+import { createNavigationMock } from "@/lib/locationState/test-utils/navigation.mock";
 import { renderWithUser } from "@/lib/locationState/test-utils/render";
-import { screen } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 
 function LocationSyncCounter() {
   const [counter, setCounter] = useLocationState({
     name: "counter",
     defaultValue: 0,
-    storeName: "session-storage",
+    storeName: "session-store",
   });
   return (
     <div>
@@ -17,17 +18,42 @@ function LocationSyncCounter() {
   );
 }
 
+function LocationSyncCounterPage() {
+  return (
+    <NavigationSyncerProvider stores={["session-store"]}>
+      <LocationSyncCounter />
+    </NavigationSyncerProvider>
+  );
+}
+
+const mockNavigation = createNavigationMock("/");
+// @ts-ignore
+globalThis.navigation = mockNavigation;
+
+beforeEach(() => {
+  mockNavigation.navigate("/");
+  sessionStorage.clear();
+});
+
 test("`counter` can be updated.", async () => {
   // Arrange
-  const { user } = renderWithUser(
-    <LocationStateProvider>
-      <LocationSyncCounter />
-    </LocationStateProvider>,
-  );
+  mockNavigation.navigate("/counter-update");
+  const { user } = renderWithUser(<LocationSyncCounterPage />);
   // Act
   await user.click(await screen.findByRole("button", { name: "increment" }));
   // Assert
   expect(screen.getByRole("heading")).toHaveTextContent("counter: 1");
 });
 
-test.todo("`counter` is reset at navigation.");
+test("`counter` is reset at navigation.", async () => {
+  // Arrange
+  mockNavigation.navigate("/counter-reset");
+  const { user } = renderWithUser(<LocationSyncCounterPage />);
+  await user.click(await screen.findByRole("button", { name: "increment" }));
+  // Act
+  await act(() => mockNavigation.navigate("/anywhere"));
+  // Assert
+  await waitFor(() =>
+    expect(screen.getByRole("heading")).toHaveTextContent("counter: 0"),
+  );
+});

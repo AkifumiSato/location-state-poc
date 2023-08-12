@@ -1,4 +1,5 @@
 import { Store } from "@/lib/locationState/store/types";
+import { StoreName } from "@/lib/locationState/types";
 import {
   createContext,
   useCallback,
@@ -17,7 +18,7 @@ export const useLocationState = <T>({
 }: {
   name: string;
   defaultValue: T;
-  storeName: string;
+  storeName: StoreName;
 }): [T, (value: T) => void] => {
   const { stores } = useContext(LocationStoresContext);
   const store = stores[storeName];

@@ -51,7 +51,11 @@ export class StorageStore implements Store {
     } else {
       this.state = {};
     }
-    // todo: Consider notifying all listeners
+    for (const listeners of this.listeners.values()) {
+      for (const listener of listeners.values()) {
+        listener();
+      }
+    }
   }
 
   save() {
