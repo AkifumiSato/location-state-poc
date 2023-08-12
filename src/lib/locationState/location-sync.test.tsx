@@ -20,7 +20,7 @@ function LocationSyncCounter() {
 
 function LocationSyncCounterPage() {
   return (
-    <LocationStateProvider stores={["session-store"]}>
+    <LocationStateProvider>
       <LocationSyncCounter />
     </LocationStateProvider>
   );
