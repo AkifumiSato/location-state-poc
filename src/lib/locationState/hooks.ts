@@ -18,7 +18,7 @@ export const useLocationState = <T>({
   name: string;
   defaultValue: T;
   storeName: string;
-}) => {
+}): [T, (value: T) => void] => {
   const { stores } = useContext(LocationStoresContext);
   const store = stores[storeName];
   if (!store) {
@@ -32,10 +32,11 @@ export const useLocationState = <T>({
   // `defaultValue` is assumed to always be the same value (for Objects, it must be memoized).
   const storeState = useSyncExternalStore(
     subscribe,
-    () => store.get(name) ?? defaultValue,
+    () => (store.get(name) as T) ?? defaultValue,
     () => defaultValue,
   );
   const setStoreState = useCallback(
+    // todo: accept functions like useState
     (value: T) => {
       store.set(name, value);
     },
