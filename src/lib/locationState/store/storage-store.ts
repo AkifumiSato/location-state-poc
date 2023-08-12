@@ -51,11 +51,11 @@ export class StorageStore implements Store {
     } else {
       this.state = {};
     }
-    for (const listeners of this.listeners.values()) {
-      for (const listener of listeners.values()) {
-        listener();
-      }
-    }
+    queueMicrotask(() => {
+      this.listeners.forEach((listeners) =>
+        listeners.forEach((listener) => listener()),
+      );
+    });
   }
 
   save() {

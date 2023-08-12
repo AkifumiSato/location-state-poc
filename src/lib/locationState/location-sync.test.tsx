@@ -30,7 +30,13 @@ const mockNavigation = createNavigationMock("/");
 // @ts-ignore
 globalThis.navigation = mockNavigation;
 
+// Mocking `queueMicrotask` to run immediately to not generate act warn.
+const queueMicrotaskSpy = jest
+  .spyOn(globalThis, "queueMicrotask")
+  .mockImplementation((callback) => callback());
+
 beforeEach(() => {
+  queueMicrotaskSpy.mockClear();
   mockNavigation.navigate("/");
   sessionStorage.clear();
 });
