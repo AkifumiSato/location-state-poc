@@ -1,11 +1,11 @@
 "use client";
 
-import { NavigationSyncerProvider } from "@/lib/locationState/Provider";
+import { LocationStateProvider } from "@/lib/locationState/Provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <NavigationSyncerProvider stores={["session-store"]}>
+    <LocationStateProvider stores={["session-store"]}>
       {children}
-    </NavigationSyncerProvider>
+    </LocationStateProvider>
   );
 }

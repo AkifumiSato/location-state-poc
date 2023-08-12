@@ -1,26 +1,22 @@
 import { LocationStoresContext } from "@/lib/locationState/hooks";
 import { StorageStore } from "@/lib/locationState/store/storage-store";
 import { NavigationSyncer } from "@/lib/locationState/syncer/navigation/navigation-syncer";
-import { StoreName } from "@/lib/locationState/types";
+import { Syncer } from "@/lib/locationState/syncer/navigation/types";
 import { ReactNode, useEffect } from "react";
 
-const allStores = {
+const stores = {
   "session-store": new StorageStore(globalThis.sessionStorage ?? undefined),
 };
 
-export function NavigationSyncerProvider({
-  stores: targetStores,
+export function LocationStateProvider({
+  syncer,
   children,
 }: {
-  stores: StoreName[];
+  syncer?: Syncer;
   children: ReactNode;
 }) {
-  const stores = Object.fromEntries(
-    targetStores.map((store) => [store, allStores[store]]),
-  );
-
   useEffect(() => {
-    const navigationSyncer = new NavigationSyncer(navigation);
+    const navigationSyncer = syncer ?? new NavigationSyncer(navigation);
     const abortController = new AbortController();
 
     Object.values(stores).forEach((store) => {
@@ -37,7 +33,7 @@ export function NavigationSyncerProvider({
       signal: abortController.signal,
     });
     return () => abortController.abort();
-  }, [stores]);
+  }, [syncer]);
 
   return (
     <LocationStoresContext.Provider value={{ stores }}>

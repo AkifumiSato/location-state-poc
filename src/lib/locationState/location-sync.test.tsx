@@ -1,5 +1,5 @@
 import { useLocationState } from "@/lib/locationState/hooks";
-import { NavigationSyncerProvider } from "@/lib/locationState/Provider";
+import { LocationStateProvider } from "@/lib/locationState/Provider";
 import { createNavigationMock } from "@/lib/locationState/test-utils/navigation.mock";
 import { renderWithUser } from "@/lib/locationState/test-utils/render";
 import { act, screen, waitFor } from "@testing-library/react";
@@ -20,9 +20,9 @@ function LocationSyncCounter() {
 
 function LocationSyncCounterPage() {
   return (
-    <NavigationSyncerProvider stores={["session-store"]}>
+    <LocationStateProvider stores={["session-store"]}>
       <LocationSyncCounter />
-    </NavigationSyncerProvider>
+    </LocationStateProvider>
   );
 }
 
