@@ -57,3 +57,5 @@ test("`counter` is reset at navigation.", async () => {
     expect(screen.getByRole("heading")).toHaveTextContent("counter: 0"),
   );
 });
+
+test.todo("`counter` is reset at navigation.");
