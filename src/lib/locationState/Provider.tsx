@@ -5,7 +5,7 @@ import { Syncer } from "@/lib/locationState/syncer/navigation/types";
 import { ReactNode, useEffect } from "react";
 
 const stores = {
-  "session-store": new StorageStore(globalThis.sessionStorage ?? undefined),
+  session: new StorageStore(globalThis.sessionStorage ?? undefined),
 };
 
 export function LocationStateProvider({

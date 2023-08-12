@@ -8,7 +8,7 @@ function LocationSyncCounter() {
   const [counter, setCounter] = useLocationState({
     name: "counter",
     defaultValue: 0,
-    storeName: "session-store",
+    storeName: "session",
   });
   return (
     <div>
