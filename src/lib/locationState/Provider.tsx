@@ -19,8 +19,9 @@ export function LocationStateProvider({
     const navigationSyncer = syncer ?? new NavigationSyncer(navigation);
     const abortController = new AbortController();
 
+    const key = navigationSyncer.key()!;
     Object.values(stores).forEach((store) => {
-      store.load(navigationSyncer.key()!);
+      store.load(key);
     });
 
     navigationSyncer.sync({
