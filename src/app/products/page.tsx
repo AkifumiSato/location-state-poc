@@ -4,8 +4,8 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main>
-      <h1>Top page</h1>
-      <Link href="/products">/products</Link>
+      <h1>Products</h1>
+      <Link href="/">/(top)</Link>
       <Counter />
     </main>
   );

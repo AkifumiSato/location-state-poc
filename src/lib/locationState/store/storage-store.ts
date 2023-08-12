@@ -8,7 +8,7 @@ export class StorageStore implements Store {
   private state: Record<string, unknown> = {};
   private listeners: Map<string, Set<Listener>> = new Map();
 
-  constructor(private readonly storage: Storage) {}
+  constructor(private readonly storage?: Storage) {}
 
   subscribe(name: string, listener: () => void) {
     const listeners = this.listeners.get(name);
@@ -44,7 +44,7 @@ export class StorageStore implements Store {
   load(locationKey: string) {
     if (this.currentKey === locationKey) return;
     this.currentKey = locationKey;
-    const value = this.storage.getItem(this.createStorageKey());
+    const value = this.storage?.getItem(this.createStorageKey()) ?? null;
     if (value !== null) {
       // todo: impl JSON or Transit
       this.state = JSON.parse(value);
@@ -63,10 +63,10 @@ export class StorageStore implements Store {
       return;
     }
     if (Object.keys(this.state).length === 0) {
-      this.storage.removeItem(this.createStorageKey());
+      this.storage?.removeItem(this.createStorageKey());
       return;
     }
-    this.storage.setItem(this.createStorageKey(), JSON.stringify(this.state));
+    this.storage?.setItem(this.createStorageKey(), JSON.stringify(this.state));
   }
 
   private createStorageKey() {
