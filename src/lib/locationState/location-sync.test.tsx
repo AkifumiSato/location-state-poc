@@ -2,7 +2,7 @@ import { useLocationState } from "@/lib/locationState/hooks";
 import { LocationStateProvider } from "@/lib/locationState/Provider";
 import { createNavigationMock } from "@/lib/locationState/test-utils/navigation.mock";
 import { renderWithUser } from "@/lib/locationState/test-utils/render";
-import { act, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 
 function LocationSyncCounter() {
   const [counter, setCounter] = useLocationState({
@@ -30,13 +30,7 @@ const mockNavigation = createNavigationMock("/");
 // @ts-ignore
 globalThis.navigation = mockNavigation;
 
-// Mocking `queueMicrotask` to run immediately to not generate act warn.
-const queueMicrotaskSpy = jest
-  .spyOn(globalThis, "queueMicrotask")
-  .mockImplementation((callback) => callback());
-
 beforeEach(() => {
-  queueMicrotaskSpy.mockClear();
   mockNavigation.navigate("/");
   sessionStorage.clear();
 });
@@ -57,7 +51,7 @@ test("`counter` is reset at navigation.", async () => {
   const { user } = renderWithUser(<LocationSyncCounterPage />);
   await user.click(await screen.findByRole("button", { name: "increment" }));
   // Act
-  await act(() => mockNavigation.navigate("/anywhere"));
+  mockNavigation.navigate("/anywhere");
   // Assert
   await waitFor(() =>
     expect(screen.getByRole("heading")).toHaveTextContent("counter: 0"),
