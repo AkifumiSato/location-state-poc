@@ -1,10 +1,10 @@
 import { Counter } from "@/app/_components/Counter";
 import Link from "next/link";
 
-export default function Home() {
+export default function Page() {
   return (
     <main>
-      <h1>Products</h1>
+      <h1>Static page</h1>
       <Link href="/">/(top)</Link>
       <Counter />
     </main>
