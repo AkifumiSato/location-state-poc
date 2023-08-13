@@ -1,4 +1,5 @@
 import { Counter } from "@/app/_components/Counter";
+import { List } from "@/app/_components/List";
 import Link from "next/link";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
         </li>
       </ul>
       <Counter />
+      <List />
     </main>
   );
 }

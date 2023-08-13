@@ -1,4 +1,5 @@
 import { Counter } from "@/app/_components/Counter";
+import { List } from "@/app/_components/List";
 import { headers } from "next/headers";
 import Link from "next/link";
 
@@ -12,6 +13,7 @@ export default function Page() {
       <p>referer: {referer}</p>
       <Link href="/">/(top)</Link>
       <Counter />
+      <List />
     </main>
   );
 }
