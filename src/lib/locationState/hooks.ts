@@ -1,15 +1,6 @@
-import { Store } from "@/lib/locationState/store/types";
+import { LocationStateContext } from "@/lib/locationState/context";
 import { StoreName } from "@/lib/locationState/types";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useSyncExternalStore,
-} from "react";
-
-export const LocationStoresContext = createContext<{
-  stores: Record<string, Store>;
-}>({ stores: {} });
+import { useCallback, useContext, useSyncExternalStore } from "react";
 
 export const useLocationState = <T>({
   name,
@@ -20,7 +11,7 @@ export const useLocationState = <T>({
   defaultValue: T;
   storeName: StoreName | string;
 }): [T, (value: T) => void] => {
-  const { stores } = useContext(LocationStoresContext);
+  const { stores } = useContext(LocationStateContext);
   const store = stores[storeName];
   if (!store) {
     // todo: fix message

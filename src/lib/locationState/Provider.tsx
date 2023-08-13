@@ -1,4 +1,4 @@
-import { LocationStoresContext } from "@/lib/locationState/hooks";
+import { LocationStateContext } from "@/lib/locationState/context";
 import { StorageStore } from "@/lib/locationState/store/storage-store";
 import { NavigationSyncer } from "@/lib/locationState/syncer/navigation/navigation-syncer";
 import { Syncer } from "@/lib/locationState/syncer/navigation/types";
@@ -46,8 +46,8 @@ export function LocationStateProvider({
   }, [syncer, stores]);
 
   return (
-    <LocationStoresContext.Provider value={{ stores }}>
+    <LocationStateContext.Provider value={{ stores }}>
       {children}
-    </LocationStoresContext.Provider>
+    </LocationStateContext.Provider>
   );
 }
