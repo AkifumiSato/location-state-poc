@@ -25,14 +25,22 @@ export function LocationStateProvider({
       store.load(key);
     });
 
+    const applyAllStore = (callback: (store: StorageStore) => void) => {
+      Object.values(stores).forEach((store) => {
+        callback(store);
+      });
+    };
     navigationSyncer.sync({
       listener: (key) => {
-        Object.values(stores).forEach((store) => {
+        applyAllStore((store) => {
           store.save();
           store.load(key);
         });
       },
       signal: abortController.signal,
+    });
+    window?.addEventListener("beforeunload", () => {
+      applyAllStore((store) => store.save());
     });
     return () => abortController.abort();
   }, [syncer, stores]);
