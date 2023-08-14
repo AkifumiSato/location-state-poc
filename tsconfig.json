@@ -29,10 +29,6 @@
       ]
     }
   },
-<<<<<<< HEAD
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", ".next"]
-=======
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -41,7 +37,7 @@
     "./jest-setup.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next"
   ]
->>>>>>> c168710 (setup testing-library)
 }
