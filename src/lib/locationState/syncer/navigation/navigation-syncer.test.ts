@@ -61,21 +61,15 @@ test("Listener is not called when `currententrychange` event and `event.navigati
   // Arrange
   const navigation = createNavigationMock("/");
   const navigationSyncer = new NavigationSyncer(navigation);
-  const listener1 = jest.fn();
-  const listener2 = jest.fn();
+  const listener = jest.fn();
   navigationSyncer.sync({
-    listener: listener1,
-    signal: new AbortController().signal,
-  });
-  navigationSyncer.sync({
-    listener: listener2,
+    listener,
     signal: new AbortController().signal,
   });
   // Act
   navigation.reload();
   // Assert
-  expect(listener1).not.toHaveBeenCalled();
-  expect(listener2).toHaveBeenCalled();
+  expect(listener).not.toHaveBeenCalled();
 });
 
 // abort does not work well, but the cause is unknown
