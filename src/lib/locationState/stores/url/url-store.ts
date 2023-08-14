@@ -2,6 +2,7 @@ import type { Listener, Store } from "../types";
 
 export class UrlStore implements Store {
   private readonly key: string;
+  private state: Record<string, unknown> = {};
 
   constructor({ key }: { key: string }) {
     this.key = key;
@@ -14,31 +15,25 @@ export class UrlStore implements Store {
   }
 
   get(name: string) {
-    const search = location.search;
-    const params = new URLSearchParams(search);
-    const param = params.get(this.key);
-    if (param === null) return undefined;
-    const data = JSON.parse(param);
-    return data[name];
+    return this.state[name];
   }
 
   set(name: string, value: unknown) {
+    this.state[name] = value;
+  }
+
+  load() {
     const search = location.search;
     const params = new URLSearchParams(search);
     const param = params.get(this.key);
-    const data = param ? JSON.parse(param) : {};
-    data[name] = value;
-    params.set(this.key, JSON.stringify(data));
-    const newSearch = params.toString();
-    const newUrl = `${location.pathname}?${newSearch}`;
-    history.replaceState(history.state, "", newUrl);
-  }
-
-  load(key: string) {
-    throw new Error("Method not implemented.");
+    this.state = param ? JSON.parse(param) : {};
   }
 
   save() {
-    throw new Error("Method not implemented.");
+    const params = new URLSearchParams();
+    params.set(this.key, JSON.stringify(this.state));
+    const newSearch = params.toString();
+    const newUrl = `${location.pathname}?${newSearch}`;
+    history.replaceState(history.state, "", newUrl);
   }
 }
