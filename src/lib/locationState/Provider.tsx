@@ -5,8 +5,8 @@ import { Syncer } from "@/lib/locationState/syncer/navigation/types";
 import { ReactNode, useEffect, useRef } from "react";
 
 export function LocationStateProvider({
-  syncer,
   children,
+  ...props
 }: {
   syncer?: Syncer;
   children: ReactNode;
@@ -17,20 +17,16 @@ export function LocationStateProvider({
   const stores = storesRef.current;
 
   useEffect(() => {
-    const navigationSyncer = syncer ?? new NavigationSyncer(navigation);
+    const syncer = props.syncer ?? new NavigationSyncer(navigation);
     const abortController = new AbortController();
-
-    const key = navigationSyncer.key()!;
-    Object.values(stores).forEach((store) => {
-      store.load(key);
-    });
-
     const applyAllStore = (callback: (store: StorageStore) => void) => {
-      Object.values(stores).forEach((store) => {
-        callback(store);
-      });
+      Object.values(stores).forEach(callback);
     };
-    navigationSyncer.sync({
+
+    const key = syncer.key()!;
+    applyAllStore((store) => store.load(key));
+
+    syncer.sync({
       listener: (key) => {
         applyAllStore((store) => {
           store.save();
@@ -43,7 +39,7 @@ export function LocationStateProvider({
       applyAllStore((store) => store.save());
     });
     return () => abortController.abort();
-  }, [syncer, stores]);
+  }, [props.syncer, stores]);
 
   return (
     <LocationStateContext.Provider value={{ stores }}>
