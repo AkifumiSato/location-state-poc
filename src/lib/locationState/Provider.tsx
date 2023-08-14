@@ -35,9 +35,13 @@ export function LocationStateProvider({
       },
       signal: abortController.signal,
     });
-    window?.addEventListener("beforeunload", () => {
-      applyAllStore((store) => store.save());
-    });
+    window?.addEventListener(
+      "beforeunload",
+      () => {
+        applyAllStore((store) => store.save());
+      },
+      { signal: abortController.signal },
+    );
     return () => abortController.abort();
   }, [props.syncer, stores]);
 
