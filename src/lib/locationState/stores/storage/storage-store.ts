@@ -1,5 +1,5 @@
-import { Listener } from "./types";
-import type { Store } from "./types";
+import { Listener } from "../types";
+import type { Store } from "../types";
 
 export const locationKeyPrefix = "__location_state_";
 

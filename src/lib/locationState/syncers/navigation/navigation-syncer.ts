@@ -1,4 +1,4 @@
-import { Syncer } from "@/lib/locationState/syncer/navigation/types";
+import { Syncer } from "@/lib/locationState/syncers/navigation/types";
 
 export class NavigationSyncer implements Syncer {
   constructor(private readonly navigation?: Navigation) {}
