@@ -1,27 +1,12 @@
-import { Listener } from "../store";
 import { Store } from "../store";
 
 export const locationKeyPrefix = "__location_state_";
 
 export class StorageStore extends Store {
   private currentKey: string | null = null;
-  private state: Record<string, unknown> = {};
 
   constructor(private readonly storage?: Storage) {
     super();
-  }
-
-  get(name: string) {
-    return this.state[name];
-  }
-
-  set(name: string, value: unknown) {
-    if (typeof value === "undefined") {
-      delete this.state[name];
-    } else {
-      this.state[name] = value;
-    }
-    this.notify(name);
   }
 
   load(locationKey: string) {

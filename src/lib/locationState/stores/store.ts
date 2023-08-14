@@ -1,7 +1,8 @@
-export type Listener = () => void;
+type Listener = () => void;
 
 export abstract class Store {
   protected listeners: Map<string, Set<Listener>> = new Map();
+  protected state: Record<string, unknown> = {};
 
   subscribe(name: string, listener: () => void) {
     const listeners = this.listeners.get(name);
@@ -31,9 +32,18 @@ export abstract class Store {
     );
   }
 
-  abstract get(name: string): unknown;
+  get(name: string) {
+    return this.state[name];
+  }
 
-  abstract set(name: string, value: unknown): void;
+  set(name: string, value: unknown) {
+    if (typeof value === "undefined") {
+      delete this.state[name];
+    } else {
+      this.state[name] = value;
+    }
+    this.notify(name);
+  }
 
   abstract load(key?: string): void;
 

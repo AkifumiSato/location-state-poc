@@ -2,24 +2,10 @@ import { Store } from "../store";
 
 export class UrlStore extends Store {
   private readonly key: string;
-  private state: Record<string, unknown> = {};
 
   constructor({ key }: { key: string }) {
     super();
     this.key = key;
-  }
-
-  get(name: string) {
-    return this.state[name];
-  }
-
-  set(name: string, value: unknown) {
-    if (typeof value === "undefined") {
-      delete this.state[name];
-    } else {
-      this.state[name] = value;
-    }
-    this.notify(name);
   }
 
   load() {
