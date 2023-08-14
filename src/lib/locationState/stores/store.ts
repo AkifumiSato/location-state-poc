@@ -27,8 +27,10 @@ export abstract class Store {
   }
 
   protected notifyAll() {
-    this.listeners.forEach((listeners) =>
-      listeners.forEach((listener) => listener()),
+    queueMicrotask(() =>
+      this.listeners.forEach((listeners) =>
+        listeners.forEach((listener) => listener()),
+      ),
     );
   }
 

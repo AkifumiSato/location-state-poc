@@ -13,7 +13,7 @@ export class UrlStore extends Store {
     const params = new URLSearchParams(search);
     const param = params.get(this.key);
     this.state = param ? JSON.parse(param) : {};
-    queueMicrotask(() => this.notifyAll());
+    this.notifyAll();
   }
 
   save() {

@@ -19,7 +19,7 @@ export class StorageStore extends Store {
     } else {
       this.state = {};
     }
-    queueMicrotask(() => this.notifyAll());
+    this.notifyAll();
   }
 
   save() {
