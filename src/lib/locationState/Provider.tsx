@@ -21,6 +21,7 @@ export function LocationStateProvider({
     const stores = contextValue.stores;
     const syncer = props.syncer ?? new NavigationSyncer(navigation);
     const abortController = new AbortController();
+    const { signal } = abortController;
     const applyAllStore = (callback: (store: StorageStore) => void) => {
       Object.values(stores).forEach(callback);
     };
@@ -35,15 +36,16 @@ export function LocationStateProvider({
           store.load(key);
         });
       },
-      signal: abortController.signal,
+      signal,
     });
     window?.addEventListener(
       "beforeunload",
       () => {
         applyAllStore((store) => store.save());
       },
-      { signal: abortController.signal },
+      { signal },
     );
+
     return () => abortController.abort();
   }, [props.syncer, contextValue.stores]);
 
