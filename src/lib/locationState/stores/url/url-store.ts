@@ -1,17 +1,12 @@
-import type { Listener, Store } from "../types";
+import { Store } from "../store";
 
-export class UrlStore implements Store {
+export class UrlStore extends Store {
   private readonly key: string;
   private state: Record<string, unknown> = {};
 
   constructor({ key }: { key: string }) {
+    super();
     this.key = key;
-  }
-
-  subscribe(name: string, listener: Listener) {
-    return () => {
-      throw new Error("Method not implemented.");
-    };
   }
 
   get(name: string) {
@@ -19,7 +14,12 @@ export class UrlStore implements Store {
   }
 
   set(name: string, value: unknown) {
-    this.state[name] = value;
+    if (typeof value === "undefined") {
+      delete this.state[name];
+    } else {
+      this.state[name] = value;
+    }
+    this.notify(name);
   }
 
   load() {
@@ -27,6 +27,7 @@ export class UrlStore implements Store {
     const params = new URLSearchParams(search);
     const param = params.get(this.key);
     this.state = param ? JSON.parse(param) : {};
+    queueMicrotask(() => this.notifyAll());
   }
 
   save() {

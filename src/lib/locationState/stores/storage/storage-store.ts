@@ -1,31 +1,14 @@
-import { Listener } from "../types";
-import type { Store } from "../types";
+import { Listener } from "../store";
+import { Store } from "../store";
 
 export const locationKeyPrefix = "__location_state_";
 
-export class StorageStore implements Store {
+export class StorageStore extends Store {
   private currentKey: string | null = null;
   private state: Record<string, unknown> = {};
-  private listeners: Map<string, Set<Listener>> = new Map();
 
-  constructor(private readonly storage?: Storage) {}
-
-  subscribe(name: string, listener: () => void) {
-    const listeners = this.listeners.get(name);
-    if (listeners) {
-      listeners.add(listener);
-    } else {
-      this.listeners.set(name, new Set([listener]));
-    }
-    return () => this.unsubscribe(name, listener);
-  }
-
-  private unsubscribe(name: string, listener: Listener) {
-    const listeners = this.listeners.get(name);
-    listeners?.delete(listener);
-    if (listeners?.size === 0) {
-      this.listeners.delete(name);
-    }
+  constructor(private readonly storage?: Storage) {
+    super();
   }
 
   get(name: string) {
@@ -38,7 +21,7 @@ export class StorageStore implements Store {
     } else {
       this.state[name] = value;
     }
-    this.listeners.get(name)?.forEach((listener) => listener());
+    this.notify(name);
   }
 
   load(locationKey: string) {
@@ -51,11 +34,7 @@ export class StorageStore implements Store {
     } else {
       this.state = {};
     }
-    queueMicrotask(() => {
-      this.listeners.forEach((listeners) =>
-        listeners.forEach((listener) => listener()),
-      );
-    });
+    queueMicrotask(() => this.notifyAll());
   }
 
   save() {
