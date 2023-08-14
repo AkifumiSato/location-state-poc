@@ -1,5 +1,5 @@
 import { NavigationSyncer } from "@/lib/locationState/syncer/navigation/navigation-syncer";
-import { createNavigationMock } from "@/lib/locationState/syncer/navigation/navigation.mock";
+import { createNavigationMock } from "@/lib/locationState/test-utils/navigation.mock";
 
 test("Key changes when `navigation.currentEntry` changes.", () => {
   // Arrange
