@@ -109,6 +109,28 @@ test("On `load` called, if the value of the corresponding key is in Storage, the
   );
 });
 
+test("On `load` called, all listener notified.", () => {
+  // Arrange
+  const queueMicrotaskSpy = jest
+    .spyOn(window, "queueMicrotask")
+    .mockImplementation((callback: () => void) => {
+      // Rewrite delayed execution to immediate execution with mockImplementation
+      callback();
+    });
+  const navigationKey = "current_location";
+  const store = new StorageStore(storage);
+  const listener1 = jest.fn();
+  const listener2 = jest.fn();
+  store.subscribe("foo", listener1);
+  store.subscribe("bar", listener2);
+  // Act
+  store.load(navigationKey);
+  // Assert
+  expect(listener1).toBeCalledTimes(1);
+  expect(listener2).toBeCalledTimes(1);
+  queueMicrotaskSpy.mockRestore();
+});
+
 test("On `save` called, the state is saved in Storage with the previous Location key.", () => {
   // Arrange
   const currentLocationKey = "current_location";

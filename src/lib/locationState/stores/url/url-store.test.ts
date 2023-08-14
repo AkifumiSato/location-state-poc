@@ -1,7 +1,5 @@
 import { UrlStore } from "./url-store";
 
-const TEST_URL_STORE_KEY = "store-key";
-
 function prepareLocation({
   pathname,
   search,
@@ -28,7 +26,7 @@ beforeEach(() => {
 test("If params is empty, the initial value is undefined.", () => {
   // Arrange
   const store = new UrlStore({
-    key: TEST_URL_STORE_KEY,
+    key: "store-key",
   });
   // Act
   const slice = store.get("foo");
@@ -39,7 +37,7 @@ test("If params is empty, the initial value is undefined.", () => {
 test("Updating a slice, the updated value can be obtained and url is updated.", () => {
   // Arrange
   const store = new UrlStore({
-    key: TEST_URL_STORE_KEY,
+    key: "store-key",
   });
   // Act
   store.set("foo", "updated");
@@ -50,7 +48,7 @@ test("Updating a slice, the updated value can be obtained and url is updated.", 
 test("listener is called when updating slice.", () => {
   // Arrange
   const store = new UrlStore({
-    key: TEST_URL_STORE_KEY,
+    key: "store-key",
   });
   const listener = jest.fn();
   store.subscribe("foo", listener);
@@ -63,7 +61,7 @@ test("listener is called when updating slice.", () => {
 test("listener is called even if updated with undefined.", () => {
   // Arrange
   const store = new UrlStore({
-    key: TEST_URL_STORE_KEY,
+    key: "store-key",
   });
   store.set("foo", "updated");
   const listener = jest.fn();
@@ -78,7 +76,7 @@ test("store.get in the listener to get the latest value.", () => {
   // Arrange
   expect.assertions(4);
   const store = new UrlStore({
-    key: TEST_URL_STORE_KEY,
+    key: "store-key",
   });
   const listener1 = jest.fn(() => {
     expect(store.get("foo")).toBe("updated");
@@ -98,7 +96,7 @@ test("store.get in the listener to get the latest value.", () => {
 test("The listener is unsubscribed by the returned callback, it will no longer be called when the slice is updated.", () => {
   // Arrange
   const store = new UrlStore({
-    key: TEST_URL_STORE_KEY,
+    key: "store-key",
   });
   const listeners = {
     unsubscribeTarget: jest.fn(),
@@ -114,19 +112,42 @@ test("The listener is unsubscribed by the returned callback, it will no longer b
   expect(listeners.other).toBeCalled();
 });
 
-test("On `load` called, the state is loaded from url by TEST_URL_STORE_KEY.", () => {
+test("On `load` called, the state is loaded from url.", () => {
   // Arrange
   prepareLocation({
     pathname: "/",
     search: "?store-key=%7B%22foo%22%3A%22updated%22%7D",
   });
   const store = new UrlStore({
-    key: TEST_URL_STORE_KEY,
+    key: "store-key",
   });
   // Act
   store.load();
   // Assert
   expect(store.get("foo")).toBe("updated");
+});
+
+test("On `load` called, all listener notified.", () => {
+  // Arrange
+  const queueMicrotaskSpy = jest
+    .spyOn(window, "queueMicrotask")
+    .mockImplementation((callback: () => void) => {
+      // Rewrite delayed execution to immediate execution with mockImplementation
+      callback();
+    });
+  const store = new UrlStore({
+    key: "store-key",
+  });
+  const listener1 = jest.fn();
+  const listener2 = jest.fn();
+  store.subscribe("foo", listener1);
+  store.subscribe("bar", listener2);
+  // Act
+  store.load();
+  // Assert
+  expect(listener1).toBeCalledTimes(1);
+  expect(listener2).toBeCalledTimes(1);
+  queueMicrotaskSpy.mockRestore();
 });
 
 test("On `save` called, the state is saved in url by history API.", () => {
@@ -137,7 +158,7 @@ test("On `save` called, the state is saved in url by history API.", () => {
       /* noop */
     });
   const store = new UrlStore({
-    key: TEST_URL_STORE_KEY,
+    key: "store-key",
   });
   store.load();
   store.set("foo", "updated");
