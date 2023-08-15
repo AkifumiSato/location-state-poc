@@ -9,7 +9,7 @@ export class StorageStore extends Store {
     super();
   }
 
-  load(locationKey: string) {
+  async load(locationKey: string) {
     if (this.currentKey === locationKey) return;
     this.currentKey = locationKey;
     const value = this.storage?.getItem(this.createStorageKey()) ?? null;
@@ -19,7 +19,7 @@ export class StorageStore extends Store {
     } else {
       this.state = {};
     }
-    this.notifyAll();
+    await this.notifyAll();
   }
 
   save() {

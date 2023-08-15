@@ -139,14 +139,8 @@ test("On `load` called, the state is loaded from url.", () => {
   expect(store.get("foo")).toBe("updated");
 });
 
-test("On `load` called, all listener notified.", () => {
+test("On `load` called, all listener notified.", async () => {
   // Arrange
-  const queueMicrotaskSpy = jest
-    .spyOn(window, "queueMicrotask")
-    .mockImplementation((callback: () => void) => {
-      // Rewrite delayed execution to immediate execution with mockImplementation
-      callback();
-    });
   const store = new UrlStore({
     key: "store-key",
   });
@@ -155,9 +149,8 @@ test("On `load` called, all listener notified.", () => {
   store.subscribe("foo", listener1);
   store.subscribe("bar", listener2);
   // Act
-  store.load();
+  await store.load();
   // Assert
   expect(listener1).toBeCalledTimes(1);
   expect(listener2).toBeCalledTimes(1);
-  queueMicrotaskSpy.mockRestore();
 });
