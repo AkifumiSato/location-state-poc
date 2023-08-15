@@ -1,5 +1,9 @@
 type Listener = () => void;
 
+export interface Store {
+  onSet?(name: string, value: unknown): void;
+}
+
 export abstract class Store {
   protected listeners: Map<string, Set<Listener>> = new Map();
   protected state: Record<string, unknown> = {};
@@ -44,6 +48,7 @@ export abstract class Store {
     } else {
       this.state[name] = value;
     }
+    this.onSet?.(name, value);
     this.notify(name);
   }
 

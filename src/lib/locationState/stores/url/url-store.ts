@@ -8,6 +8,15 @@ export class UrlStore extends Store {
     this.key = key;
   }
 
+  onSet() {
+    // save in url
+    const params = new URLSearchParams();
+    params.set(this.key, JSON.stringify(this.state));
+    const newSearch = params.toString();
+    const newUrl = `${location.pathname}?${newSearch}`;
+    history.replaceState(history.state, "", newUrl);
+  }
+
   load() {
     const search = location.search;
     const params = new URLSearchParams(search);
@@ -17,10 +26,6 @@ export class UrlStore extends Store {
   }
 
   save() {
-    const params = new URLSearchParams();
-    params.set(this.key, JSON.stringify(this.state));
-    const newSearch = params.toString();
-    const newUrl = `${location.pathname}?${newSearch}`;
-    history.replaceState(history.state, "", newUrl);
+    // `set` to save it in the URL, so it does nothing.
   }
 }

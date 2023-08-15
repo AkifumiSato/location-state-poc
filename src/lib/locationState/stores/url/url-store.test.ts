@@ -34,8 +34,13 @@ test("If params is empty, the initial value is undefined.", () => {
   expect(slice).toBeUndefined();
 });
 
-test("Updating a slice, the updated value can be obtained and url is updated.", () => {
+test("On `set` called, store's values are updated and reflected in the URL", () => {
   // Arrange
+  const replaceSpy = jest
+    .spyOn(history, "replaceState")
+    .mockImplementation(() => {
+      /* noop */
+    });
   const store = new UrlStore({
     key: "store-key",
   });
@@ -43,6 +48,13 @@ test("Updating a slice, the updated value can be obtained and url is updated.", 
   store.set("foo", "updated");
   // Assert
   expect(store.get("foo")).toBe("updated");
+  expect(replaceSpy).toHaveBeenCalledTimes(1);
+  expect(replaceSpy).toHaveBeenCalledWith(
+    null,
+    "",
+    "/?store-key=%7B%22foo%22%3A%22updated%22%7D",
+  );
+  replaceSpy.mockRestore();
 });
 
 test("listener is called when updating slice.", () => {
@@ -148,28 +160,4 @@ test("On `load` called, all listener notified.", () => {
   expect(listener1).toBeCalledTimes(1);
   expect(listener2).toBeCalledTimes(1);
   queueMicrotaskSpy.mockRestore();
-});
-
-test("On `save` called, the state is saved in url by history API.", () => {
-  // Arrange
-  const replaceSpy = jest
-    .spyOn(history, "replaceState")
-    .mockImplementation(() => {
-      /* noop */
-    });
-  const store = new UrlStore({
-    key: "store-key",
-  });
-  store.load();
-  store.set("foo", "updated");
-  // Act
-  store.save();
-  // Assert
-  expect(replaceSpy).toHaveBeenCalledTimes(1);
-  expect(replaceSpy).toHaveBeenCalledWith(
-    null,
-    "",
-    "/?store-key=%7B%22foo%22%3A%22updated%22%7D",
-  );
-  replaceSpy.mockRestore();
 });
