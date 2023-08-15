@@ -30,14 +30,11 @@ export abstract class Store {
     this.listeners.get(name)?.forEach((listener) => listener());
   }
 
-  protected async notifyAll() {
-    return new Promise((resolve) => {
-      queueMicrotask(() => {
-        this.listeners.forEach((listeners) =>
-          listeners.forEach((listener) => listener()),
-        );
-        resolve(undefined);
-      });
+  protected notifyAll() {
+    queueMicrotask(() => {
+      this.listeners.forEach((listeners) =>
+        listeners.forEach((listener) => listener()),
+      );
     });
   }
 
@@ -55,7 +52,7 @@ export abstract class Store {
     this.notify(name);
   }
 
-  abstract load(key?: string): Promise<void>;
+  abstract load(key?: string): void;
 
   abstract save(): void;
 }

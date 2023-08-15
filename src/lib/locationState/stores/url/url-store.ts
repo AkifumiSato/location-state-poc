@@ -17,12 +17,12 @@ export class UrlStore extends Store {
     history.replaceState(history.state, "", newUrl);
   }
 
-  async load() {
+  load() {
     const search = location.search;
     const params = new URLSearchParams(search);
     const param = params.get(this.key);
     this.state = param ? JSON.parse(param) : {};
-    await this.notifyAll();
+    this.notifyAll();
   }
 
   save() {

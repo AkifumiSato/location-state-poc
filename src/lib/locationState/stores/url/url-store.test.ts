@@ -149,7 +149,9 @@ test("On `load` called, all listener notified.", async () => {
   store.subscribe("foo", listener1);
   store.subscribe("bar", listener2);
   // Act
-  await store.load();
+  store.load();
+  // Generate and execute microtasks with Promise to wait for listener execution.
+  await Promise.resolve();
   // Assert
   expect(listener1).toBeCalledTimes(1);
   expect(listener2).toBeCalledTimes(1);
