@@ -17,16 +17,12 @@ export class NextPagesSyncer implements Syncer {
   }): void {
     const handler = () => {
       // Since an Entry always exists at the time of `routeChangeStart`, it is non-null.
-      const currentKey = this.key()!;
-
-      // todo: ブラウザバック・フォワードではうまくいくが遷移時に古いkeyのままなので初期化が必要
-      // https://github.com/recruit-tech/recoil-sync-next/blob/main/src/history/useSyncHistory.ts#L90C1-L92C41
-      listener(currentKey);
+      listener(this.key()!);
     };
-    this.router.events.on("routeChangeStart", handler);
+    this.router.events.on("routeChangeComplete", handler);
 
     signal.addEventListener("abort", () => {
-      this.router.events.off("routeChangeStart", handler);
+      this.router.events.off("routeChangeComplete", handler);
     });
   }
 }

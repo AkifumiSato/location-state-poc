@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Page() {
   return (
     <div>
-      <h1>Page</h1>
+      <h1>Other Page</h1>
       <p>
         <Link href="/pages">/pages</Link>
       </p>
