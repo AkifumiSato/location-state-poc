@@ -1,7 +1,7 @@
 import { LocationStateContext } from "@/lib/locationState/context";
 import { StorageStore } from "@/lib/locationState/stores/storage/storage-store";
 import { NavigationSyncer } from "@/lib/locationState/syncers/navigation/navigation-syncer";
-import { Syncer } from "@/lib/locationState/syncers/navigation/types";
+import { Syncer } from "@/lib/locationState/syncers/types";
 import { ReactNode, useEffect, useState } from "react";
 
 export function LocationStateProvider({

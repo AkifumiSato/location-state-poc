@@ -1,4 +1,4 @@
-import { Syncer } from "@/lib/locationState/syncers/navigation/types";
+import { Syncer } from "@/lib/locationState/syncers/types";
 
 export class NavigationSyncer implements Syncer {
   constructor(private readonly navigation?: Navigation) {}
@@ -37,5 +37,9 @@ export class NavigationSyncer implements Syncer {
         signal,
       },
     );
+  }
+
+  updateURL(url: string): void {
+    this.navigation?.navigate(url, { history: "replace" });
   }
 }

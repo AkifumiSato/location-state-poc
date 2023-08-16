@@ -92,3 +92,13 @@ test("After `abort`, listener is called when `currententrychange` event and `eve
   expect(listener1).not.toHaveBeenCalled();
   expect(listener2).toHaveBeenCalled();
 });
+
+test("When `updateURL` called, navigation.navigate` is called with replace specified.", () => {
+  // Arrange
+  const navigation = createNavigationMock("/");
+  const navigationSyncer = new NavigationSyncer(navigation);
+  // Act
+  navigationSyncer.updateURL("/hoge");
+  // Assert
+  expect(navigation.currentEntry?.url).toBe("/hoge");
+});
