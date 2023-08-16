@@ -1,4 +1,4 @@
-import { UrlStore } from "./url-store";
+import { URLStore } from "./url-store";
 
 function prepareLocation({
   pathname,
@@ -25,7 +25,7 @@ beforeEach(() => {
 
 test("If params is empty, the initial value is undefined.", () => {
   // Arrange
-  const store = new UrlStore({
+  const store = new URLStore({
     key: "store-key",
   });
   // Act
@@ -41,7 +41,7 @@ test("On `set` called, store's values are updated and reflected in the URL", () 
     .mockImplementation(() => {
       /* noop */
     });
-  const store = new UrlStore({
+  const store = new URLStore({
     key: "store-key",
   });
   // Act
@@ -59,7 +59,7 @@ test("On `set` called, store's values are updated and reflected in the URL", () 
 
 test("listener is called when updating slice.", () => {
   // Arrange
-  const store = new UrlStore({
+  const store = new URLStore({
     key: "store-key",
   });
   const listener = jest.fn();
@@ -72,7 +72,7 @@ test("listener is called when updating slice.", () => {
 
 test("listener is called even if updated with undefined.", () => {
   // Arrange
-  const store = new UrlStore({
+  const store = new URLStore({
     key: "store-key",
   });
   store.set("foo", "updated");
@@ -87,7 +87,7 @@ test("listener is called even if updated with undefined.", () => {
 test("store.get in the listener to get the latest value.", () => {
   // Arrange
   expect.assertions(4);
-  const store = new UrlStore({
+  const store = new URLStore({
     key: "store-key",
   });
   const listener1 = jest.fn(() => {
@@ -107,7 +107,7 @@ test("store.get in the listener to get the latest value.", () => {
 
 test("The listener is unsubscribed by the returned callback, it will no longer be called when the slice is updated.", () => {
   // Arrange
-  const store = new UrlStore({
+  const store = new URLStore({
     key: "store-key",
   });
   const listeners = {
@@ -130,7 +130,7 @@ test("On `load` called, the state is loaded from url.", () => {
     pathname: "/",
     search: "?store-key=%7B%22foo%22%3A%22updated%22%7D",
   });
-  const store = new UrlStore({
+  const store = new URLStore({
     key: "store-key",
   });
   // Act
@@ -141,7 +141,7 @@ test("On `load` called, the state is loaded from url.", () => {
 
 test("On `load` called, all listener notified.", async () => {
   // Arrange
-  const store = new UrlStore({
+  const store = new URLStore({
     key: "store-key",
   });
   const listener1 = jest.fn();

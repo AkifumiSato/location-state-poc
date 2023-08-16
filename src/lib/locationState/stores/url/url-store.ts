@@ -1,6 +1,6 @@
 import { Listener, Store } from "../types";
 
-export class UrlStore implements Store {
+export class URLStore implements Store {
   private state: Record<string, unknown> = {};
   private readonly listeners: Map<string, Set<Listener>> = new Map();
   private readonly key: string;
@@ -47,7 +47,7 @@ export class UrlStore implements Store {
     } else {
       this.state[name] = value;
     }
-    // save in url
+    // save to url
     const params = new URLSearchParams();
     params.set(this.key, JSON.stringify(this.state));
     const newSearch = params.toString();
