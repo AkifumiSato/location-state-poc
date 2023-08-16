@@ -109,14 +109,8 @@ test("On `load` called, if the value of the corresponding key is in Storage, the
   );
 });
 
-test("On `load` called, all listener notified.", () => {
+test("On `load` called, all listener notified.", async () => {
   // Arrange
-  const queueMicrotaskSpy = jest
-    .spyOn(window, "queueMicrotask")
-    .mockImplementation((callback: () => void) => {
-      // Rewrite delayed execution to immediate execution with mockImplementation
-      callback();
-    });
   const navigationKey = "current_location";
   const store = new StorageStore(storage);
   const listener1 = jest.fn();
@@ -125,10 +119,11 @@ test("On `load` called, all listener notified.", () => {
   store.subscribe("bar", listener2);
   // Act
   store.load(navigationKey);
+  // Generate and execute microtasks with Promise to wait for listener execution.
+  await Promise.resolve();
   // Assert
   expect(listener1).toBeCalledTimes(1);
   expect(listener2).toBeCalledTimes(1);
-  queueMicrotaskSpy.mockRestore();
 });
 
 test("On `save` called, the state is saved in Storage with the previous Location key.", () => {
