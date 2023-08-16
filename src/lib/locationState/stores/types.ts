@@ -1,7 +1,7 @@
 export type Listener = () => void;
 
 export type Store = {
-  subscribe(name: string, listener: () => void): () => void;
+  subscribe(name: string, listener: Listener): () => void;
 
   get(name: string): unknown;
 
