@@ -1,13 +1,14 @@
+import { Syncer } from "@/lib/locationState/syncers/types";
 import { Listener, Store } from "../types";
 
 export class URLStore implements Store {
   private state: Record<string, unknown> = {};
   private readonly listeners: Map<string, Set<Listener>> = new Map();
-  private readonly key: string;
 
-  constructor({ key }: { key: string }) {
-    this.key = key;
-  }
+  constructor(
+    private readonly key: string,
+    private readonly syncer: Syncer,
+  ) {}
 
   subscribe(name: string, listener: Listener) {
     const listeners = this.listeners.get(name);
@@ -50,7 +51,7 @@ export class URLStore implements Store {
     // save to url
     const url = new URL(location.href);
     url.searchParams.set(this.key, JSON.stringify(this.state));
-    history.replaceState(history.state, "", url.toString());
+    this.syncer.updateURL(url.toString());
 
     this.notify(name);
   }

@@ -1,3 +1,4 @@
+import { Syncer } from "@/lib/locationState/syncers/types";
 import { URLStore } from "./url-store";
 
 function prepareLocation({
@@ -17,18 +18,21 @@ function prepareLocation({
   });
 }
 
+const syncerMock = {
+  updateURL: jest.fn() as unknown,
+} as Syncer;
+
 beforeEach(() => {
   prepareLocation({
     pathname: "/",
     search: "",
   });
+  (syncerMock.updateURL as jest.Mock).mockClear();
 });
 
 test("If params is empty, the initial value is undefined.", () => {
   // Arrange
-  const store = new URLStore({
-    key: "store-key",
-  });
+  const store = new URLStore("store-key", syncerMock);
   // Act
   const slice = store.get("foo");
   // Assert
@@ -37,36 +41,24 @@ test("If params is empty, the initial value is undefined.", () => {
 
 test("On `set` called, store's values are updated and reflected in the URL", () => {
   // Arrange
-  const replaceSpy = jest
-    .spyOn(history, "replaceState")
-    .mockImplementation(() => {
-      /* noop */
-    });
   prepareLocation({
     pathname: "/",
     search: "?hoge=fuga",
   });
-  const store = new URLStore({
-    key: "store-key",
-  });
+  const store = new URLStore("store-key", syncerMock);
   // Act
   store.set("foo", "updated");
   // Assert
   expect(store.get("foo")).toBe("updated");
-  expect(replaceSpy).toHaveBeenCalledTimes(1);
-  expect(replaceSpy).toHaveBeenCalledWith(
-    null,
-    "",
+  expect(syncerMock.updateURL).toHaveBeenCalledTimes(1);
+  expect(syncerMock.updateURL).toHaveBeenCalledWith(
     "http://localhost/?hoge=fuga&store-key=%7B%22foo%22%3A%22updated%22%7D",
   );
-  replaceSpy.mockRestore();
 });
 
 test("listener is called when updating slice.", () => {
   // Arrange
-  const store = new URLStore({
-    key: "store-key",
-  });
+  const store = new URLStore("store-key", syncerMock);
   const listener = jest.fn();
   store.subscribe("foo", listener);
   // Act
@@ -77,9 +69,7 @@ test("listener is called when updating slice.", () => {
 
 test("listener is called even if updated with undefined.", () => {
   // Arrange
-  const store = new URLStore({
-    key: "store-key",
-  });
+  const store = new URLStore("store-key", syncerMock);
   store.set("foo", "updated");
   const listener = jest.fn();
   store.subscribe("foo", listener);
@@ -92,9 +82,7 @@ test("listener is called even if updated with undefined.", () => {
 test("store.get in the listener to get the latest value.", () => {
   // Arrange
   expect.assertions(4);
-  const store = new URLStore({
-    key: "store-key",
-  });
+  const store = new URLStore("store-key", syncerMock);
   const listener1 = jest.fn(() => {
     expect(store.get("foo")).toBe("updated");
   });
@@ -112,9 +100,7 @@ test("store.get in the listener to get the latest value.", () => {
 
 test("The listener is unsubscribed by the returned callback, it will no longer be called when the slice is updated.", () => {
   // Arrange
-  const store = new URLStore({
-    key: "store-key",
-  });
+  const store = new URLStore("store-key", syncerMock);
   const listeners = {
     unsubscribeTarget: jest.fn(),
     other: jest.fn(),
@@ -135,9 +121,7 @@ test("On `load` called, the state is loaded from url.", () => {
     pathname: "/",
     search: "?store-key=%7B%22foo%22%3A%22updated%22%7D",
   });
-  const store = new URLStore({
-    key: "store-key",
-  });
+  const store = new URLStore("store-key", syncerMock);
   // Act
   store.load();
   // Assert
@@ -146,9 +130,7 @@ test("On `load` called, the state is loaded from url.", () => {
 
 test("On `load` called, all listener notified.", async () => {
   // Arrange
-  const store = new URLStore({
-    key: "store-key",
-  });
+  const store = new URLStore("store-key", syncerMock);
   const listener1 = jest.fn();
   const listener2 = jest.fn();
   store.subscribe("foo", listener1);
