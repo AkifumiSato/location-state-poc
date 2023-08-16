@@ -3,6 +3,8 @@ import { Listener, Store } from "../types";
 
 export class URLStore implements Store {
   private state: Record<string, unknown> = {};
+  // `state`'s JSON string for comparison
+  private stateJSON: string = "{}";
   private readonly listeners: Map<string, Set<Listener>> = new Map();
 
   constructor(
@@ -48,9 +50,10 @@ export class URLStore implements Store {
     } else {
       this.state[name] = value;
     }
+    this.stateJSON = JSON.stringify(this.state);
     // save to url
     const url = new URL(location.href);
-    url.searchParams.set(this.key, JSON.stringify(this.state));
+    url.searchParams.set(this.key, this.stateJSON);
     this.syncer.updateURL(url.toString());
 
     this.notify(name);
@@ -59,7 +62,7 @@ export class URLStore implements Store {
   load() {
     const params = new URLSearchParams(location.search);
     const stateJSON = params.get(this.key);
-    if (JSON.stringify(this.state) === stateJSON) return;
+    if (this.stateJSON === stateJSON) return;
     this.state = stateJSON ? JSON.parse(stateJSON) : {};
     queueMicrotask(() => this.notifyAll());
   }
