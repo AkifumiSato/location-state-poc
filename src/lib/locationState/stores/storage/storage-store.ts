@@ -1,15 +1,15 @@
-import { Listener, Store } from "../store";
+import { Listener, Store } from "../types";
 
 export const locationKeyPrefix = "__location_state_";
 
 export class StorageStore implements Store {
+  private state: Record<string, unknown> = {};
+  private readonly listeners: Map<string, Set<Listener>> = new Map();
   private currentKey: string | null = null;
-  listeners: Map<string, Set<Listener>> = new Map();
-  state: Record<string, unknown> = {};
 
   constructor(private readonly storage?: Storage) {}
 
-  subscribe(name: string, listener: () => void) {
+  subscribe(name: string, listener: Listener) {
     const listeners = this.listeners.get(name);
     if (listeners) {
       listeners.add(listener);
@@ -27,16 +27,14 @@ export class StorageStore implements Store {
     }
   }
 
-  notify(name: string) {
+  private notify(name: string) {
     this.listeners.get(name)?.forEach((listener) => listener());
   }
 
-  notifyAll() {
-    queueMicrotask(() => {
-      this.listeners.forEach((listeners) =>
-        listeners.forEach((listener) => listener()),
-      );
-    });
+  private notifyAll() {
+    this.listeners.forEach((listeners) =>
+      listeners.forEach((listener) => listener()),
+    );
   }
 
   get(name: string) {
@@ -62,7 +60,7 @@ export class StorageStore implements Store {
     } else {
       this.state = {};
     }
-    this.notifyAll();
+    queueMicrotask(() => this.notifyAll());
   }
 
   save() {

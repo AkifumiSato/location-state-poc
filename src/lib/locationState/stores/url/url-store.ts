@@ -1,15 +1,15 @@
-import { Listener, Store } from "../store";
+import { Listener, Store } from "../types";
 
 export class UrlStore implements Store {
+  private state: Record<string, unknown> = {};
+  private readonly listeners: Map<string, Set<Listener>> = new Map();
   private readonly key: string;
-  listeners: Map<string, Set<Listener>> = new Map();
-  state: Record<string, unknown> = {};
 
   constructor({ key }: { key: string }) {
     this.key = key;
   }
 
-  subscribe(name: string, listener: () => void) {
+  subscribe(name: string, listener: Listener) {
     const listeners = this.listeners.get(name);
     if (listeners) {
       listeners.add(listener);
@@ -27,16 +27,14 @@ export class UrlStore implements Store {
     }
   }
 
-  notify(name: string) {
+  private notify(name: string) {
     this.listeners.get(name)?.forEach((listener) => listener());
   }
 
-  notifyAll() {
-    queueMicrotask(() => {
-      this.listeners.forEach((listeners) =>
-        listeners.forEach((listener) => listener()),
-      );
-    });
+  private notifyAll() {
+    this.listeners.forEach((listeners) =>
+      listeners.forEach((listener) => listener()),
+    );
   }
 
   get(name: string) {
@@ -64,7 +62,7 @@ export class UrlStore implements Store {
     const params = new URLSearchParams(search);
     const param = params.get(this.key);
     this.state = param ? JSON.parse(param) : {};
-    this.notifyAll();
+    queueMicrotask(() => this.notifyAll());
   }
 
   save() {
