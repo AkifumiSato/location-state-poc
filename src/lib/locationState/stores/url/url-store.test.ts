@@ -11,6 +11,7 @@ function prepareLocation({
     value: {
       pathname,
       search,
+      href: `http://localhost${pathname}${search}`,
     },
     writable: true,
   });
@@ -41,6 +42,10 @@ test("On `set` called, store's values are updated and reflected in the URL", () 
     .mockImplementation(() => {
       /* noop */
     });
+  prepareLocation({
+    pathname: "/",
+    search: "?hoge=fuga",
+  });
   const store = new URLStore({
     key: "store-key",
   });
@@ -52,7 +57,7 @@ test("On `set` called, store's values are updated and reflected in the URL", () 
   expect(replaceSpy).toHaveBeenCalledWith(
     null,
     "",
-    "/?store-key=%7B%22foo%22%3A%22updated%22%7D",
+    "http://localhost/?hoge=fuga&store-key=%7B%22foo%22%3A%22updated%22%7D",
   );
   replaceSpy.mockRestore();
 });

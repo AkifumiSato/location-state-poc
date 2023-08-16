@@ -48,11 +48,9 @@ export class URLStore implements Store {
       this.state[name] = value;
     }
     // save to url
-    const params = new URLSearchParams();
-    params.set(this.key, JSON.stringify(this.state));
-    const newSearch = params.toString();
-    const newUrl = `${location.pathname}?${newSearch}`;
-    history.replaceState(history.state, "", newUrl);
+    const url = new URL(location.href);
+    url.searchParams.set(this.key, JSON.stringify(this.state));
+    history.replaceState(history.state, "", url.toString());
 
     this.notify(name);
   }
