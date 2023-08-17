@@ -6,7 +6,7 @@ import { unsafeNavigation } from "@/lib/locationState/syncers/navigation/unsafe-
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <LocationStateProvider syncer={new NavigationSyncer(unsafeNavigation)}>
+    <LocationStateProvider syncer={new NavigationSyncer(unsafeNavigation())}>
       {children}
     </LocationStateProvider>
   );

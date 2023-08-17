@@ -13,7 +13,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "client-only": "0.0.1",
     "next": "13.4.12",
     "react": "18.2.0",
     "react-dom": "18.2.0"

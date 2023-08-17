@@ -1,11 +1,17 @@
-import "client-only";
+import crypto from 'crypto'
 
-export const unsafeNavigation =
-  typeof window === "undefined"
-    ? undefined
-    : window.navigation
-    ? window.navigation
-    : installUnsafeNavigation();
+// Let them evaluate delays based on ease of testing.
+let navigation: Navigation | undefined;
+
+export const unsafeNavigation = () => {
+  navigation =
+    typeof window === "undefined"
+      ? undefined
+      : window.navigation
+      ? window.navigation
+      : installUnsafeNavigation();
+  return navigation;
+};
 
 function installUnsafeNavigation(): Navigation {
   const originalHistory = window.history;
