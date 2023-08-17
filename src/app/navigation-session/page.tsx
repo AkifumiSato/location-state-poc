@@ -1,5 +1,5 @@
-import { Counter } from "@/app/_components/Counter";
-import { List } from "@/app/_components/List";
+import { Counter } from "@/app/navigation-session/_components/Counter";
+import { List } from "@/app/navigation-session/_components/List";
 import Link from "next/link";
 
 export default function Page() {

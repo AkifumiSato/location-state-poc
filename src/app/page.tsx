@@ -8,6 +8,9 @@ export default function Page() {
         <li>
           <Link href="/navigation-session">/navigation-session</Link>
         </li>
+        <li>
+          <Link href="/navigation-url">/navigation-url</Link>
+        </li>
       </ul>
     </main>
   );

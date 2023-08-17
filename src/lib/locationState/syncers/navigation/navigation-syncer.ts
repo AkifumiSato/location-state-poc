@@ -40,6 +40,6 @@ export class NavigationSyncer implements Syncer {
   }
 
   updateURL(url: string): void {
-    this.navigation?.navigate(url, { history: "replace" });
+    globalThis.history.replaceState(globalThis.history.state, "", url);
   }
 }

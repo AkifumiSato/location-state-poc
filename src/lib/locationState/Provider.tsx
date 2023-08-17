@@ -1,5 +1,7 @@
 import { LocationStateContext } from "@/lib/locationState/context";
 import { StorageStore } from "@/lib/locationState/stores/storage/storage-store";
+import { Store } from "@/lib/locationState/stores/types";
+import { URLStore } from "@/lib/locationState/stores/url/url-store";
 import { NavigationSyncer } from "@/lib/locationState/syncers/navigation/navigation-syncer";
 import { Syncer } from "@/lib/locationState/syncers/types";
 import { ReactNode, useEffect, useState } from "react";
@@ -11,18 +13,21 @@ export function LocationStateProvider({
   syncer?: Syncer;
   children: ReactNode;
 }) {
+  const [syncer] = useState(
+    () => props.syncer ?? new NavigationSyncer(navigation),
+  );
   const [contextValue] = useState(() => ({
     stores: {
       session: new StorageStore(globalThis.sessionStorage),
+      url: new URLStore("location-state", syncer),
     },
   }));
 
   useEffect(() => {
     const stores = contextValue.stores;
-    const syncer = props.syncer ?? new NavigationSyncer(navigation);
     const abortController = new AbortController();
     const { signal } = abortController;
-    const applyAllStore = (callback: (store: StorageStore) => void) => {
+    const applyAllStore = (callback: (store: Store) => void) => {
       Object.values(stores).forEach(callback);
     };
 
@@ -47,7 +52,7 @@ export function LocationStateProvider({
     );
 
     return () => abortController.abort();
-  }, [props.syncer, contextValue.stores]);
+  }, [syncer, contextValue.stores]);
 
   return (
     <LocationStateContext.Provider value={contextValue}>
