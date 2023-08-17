@@ -1,21 +1,14 @@
-import { Counter } from "@/app/_components/Counter";
-import { List } from "@/app/_components/List";
 import Link from "next/link";
 
-export default function Home() {
+export default function Page() {
   return (
     <main>
       <h1>Top page</h1>
       <ul>
         <li>
-          <Link href="/static">/static</Link>
-        </li>
-        <li>
-          <Link href="/dynamic">/dynamic</Link>
+          <Link href="/navigation-session">/navigation-session</Link>
         </li>
       </ul>
-      <Counter />
-      <List />
     </main>
   );
 }
