@@ -143,3 +143,18 @@ test("On `load` called, all listener notified.", async () => {
   expect(listener1).toBeCalledTimes(1);
   expect(listener2).toBeCalledTimes(1);
 });
+
+test("On `load` called, delete parameter if invalid JSON string.", () => {
+  // Arrange
+  prepareLocation({
+    pathname: "/",
+    search: "?store-key=invalid-json-string",
+  });
+  const store = new URLStore("store-key", syncerMock);
+  // Act
+  store.load();
+  // Assert
+  expect(store.get("foo")).toBeUndefined();
+  expect(syncerMock.updateURL).toHaveBeenCalledTimes(1);
+  expect(syncerMock.updateURL).toHaveBeenCalledWith("http://localhost/");
+});

@@ -64,8 +64,16 @@ export class URLStore implements Store {
     const stateJSON = params.get(this.key);
     if (this.stateJSON === stateJSON) return;
     this.stateJSON = stateJSON!;
-    // todo: handle errors
-    this.state = JSON.parse(this.stateJSON || "{}");
+    try {
+      this.state = JSON.parse(this.stateJSON || "{}");
+    } catch (e) {
+      this.state = {};
+      // remove invalid state from url.
+      const url = new URL(location.href);
+      url.searchParams.delete(this.key);
+      this.syncer.updateURL(url.toString());
+      return;
+    }
     queueMicrotask(() => this.notifyAll());
   }
 
