@@ -3,7 +3,6 @@ import { StorageStore } from "@/lib/locationState/stores/storage/storage-store";
 import { Store } from "@/lib/locationState/stores/types";
 import { URLStore } from "@/lib/locationState/stores/url/url-store";
 import { NavigationSyncer } from "@/lib/locationState/syncers/navigation/navigation-syncer";
-import { unsafeNavigation } from "@/lib/locationState/syncers/navigation/unsafe-navigation";
 import { Syncer } from "@/lib/locationState/syncers/types";
 import { ReactNode, useEffect, useState } from "react";
 
@@ -15,7 +14,7 @@ export function LocationStateProvider({
   children: ReactNode;
 }) {
   const [syncer] = useState(
-    () => props.syncer ?? new NavigationSyncer(unsafeNavigation()),
+    () => props.syncer ?? new NavigationSyncer(window.navigation),
   );
   const [contextValue] = useState(() => ({
     stores: {

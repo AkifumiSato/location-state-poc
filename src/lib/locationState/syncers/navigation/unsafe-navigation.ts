@@ -1,17 +1,11 @@
-import crypto from 'crypto'
+import "client-only";
 
-// Let them evaluate delays based on ease of testing.
-let navigation: Navigation | undefined;
-
-export const unsafeNavigation = () => {
-  navigation =
-    typeof window === "undefined"
-      ? undefined
-      : window.navigation
-      ? window.navigation
-      : installUnsafeNavigation();
-  return navigation;
-};
+export const unsafeNavigation =
+  typeof window === "undefined"
+    ? undefined
+    : window.navigation
+    ? window.navigation
+    : installUnsafeNavigation();
 
 function installUnsafeNavigation(): Navigation {
   const originalHistory = window.history;
@@ -125,28 +119,9 @@ function installUnsafeNavigation(): Navigation {
     });
   };
 
-  const navigate = (url: string, options?: NavigationNavigateOptions) => {
-    const { history = "auto" } = options ?? {};
-    switch (history) {
-      case "auto":
-      case "push": {
-        pushState(null, "", url);
-        break;
-      }
-      case "replace": {
-        replaceState(originalHistory.state, "", url);
-        break;
-      }
-      default: {
-        throw new Error(`Invalid navigation type: ${history}`);
-      }
-    }
-  };
-
   const navigation = {
     addEventListener,
     removeEventListener,
-    navigate,
   };
   Object.defineProperty(navigation, "currentEntry", {
     configurable: true,
