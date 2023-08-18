@@ -1,19 +1,22 @@
 "use client";
 
 import { useLocationState } from "@/lib/locationState/hooks";
+import { StoreName } from "@/lib/locationState/types";
 
-export function List() {
+export function List({ storeName }: { storeName: StoreName }) {
   const [displayList, setDisplayList] = useLocationState({
     name: "display-list",
     defaultValue: false,
-    storeName: "session",
+    storeName,
   });
   const list = Array(displayList ? 100 : 0).fill(0);
   console.debug("rendered List", { displayList });
 
   return (
     <div>
-      <h3>List</h3>
+      <p>
+        storeName: <b>{storeName}</b> List
+      </p>
       <label>
         <input
           type="checkbox"

@@ -10,10 +10,12 @@ export default function Page() {
   return (
     <main>
       <h1>Dynamic page</h1>
-      <p>referer: {referer}</p>
       <Link href="/">/(top)</Link>
-      <Counter />
-      <List />
+      <p>referer: {referer}</p>
+      <Counter storeName="session" />
+      <Counter storeName="url" />
+      <List storeName="session" />
+      <List storeName="url" />
     </main>
   );
 }
