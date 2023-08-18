@@ -63,7 +63,9 @@ export class URLStore implements Store {
     const params = new URLSearchParams(location.search);
     const stateJSON = params.get(this.key);
     if (this.stateJSON === stateJSON) return;
-    this.state = stateJSON ? JSON.parse(stateJSON) : {};
+    this.stateJSON = stateJSON!;
+    // todo: handle errors
+    this.state = JSON.parse(this.stateJSON || "{}");
     queueMicrotask(() => this.notifyAll());
   }
 
