@@ -2,7 +2,7 @@ import { Counter } from "@/app/_components/Counter";
 import { List } from "@/app/_components/List";
 import Link from "next/link";
 
-export default function Home() {
+export default function Page() {
   return (
     <main>
       <h1>Top page</h1>
@@ -14,8 +14,10 @@ export default function Home() {
           <Link href="/dynamic">/dynamic</Link>
         </li>
       </ul>
-      <Counter />
-      <List />
+      <Counter storeName="session" />
+      <Counter storeName="url" />
+      <List storeName="session" />
+      <List storeName="url" />
     </main>
   );
 }

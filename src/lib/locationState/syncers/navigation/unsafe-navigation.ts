@@ -13,7 +13,7 @@ function installUnsafeNavigation(): Navigation {
     originalHistory.replaceState(
       { ___UNSAFE_NAVIGATION_KEY___: crypto.randomUUID() },
       "",
-      location.href
+      location.href,
     );
   }
 
@@ -21,7 +21,7 @@ function installUnsafeNavigation(): Navigation {
     originalHistory.pushState(
       { ___UNSAFE_NAVIGATION_KEY___: crypto.randomUUID(), ...state },
       unused,
-      url
+      url,
     );
     notify("currententrychange", {
       navigationType: "push",
@@ -33,7 +33,7 @@ function installUnsafeNavigation(): Navigation {
     originalHistory.replaceState(
       { ...state, ___UNSAFE_NAVIGATION_KEY___ },
       unused,
-      url
+      url,
     );
     notify("currententrychange", {
       navigationType: "replace",
@@ -82,7 +82,7 @@ function installUnsafeNavigation(): Navigation {
   const addEventListener: (
     type: string,
     listener: EventListener,
-    options?: boolean | AddEventListenerOptions | undefined
+    options?: boolean | AddEventListenerOptions | undefined,
   ) => void = (type, listener, options) => {
     if (!listener) return;
     const listeners = listenersMap.get(type);
@@ -93,7 +93,7 @@ function installUnsafeNavigation(): Navigation {
     }
     if (options && typeof options === "object" && options.signal) {
       options.signal.addEventListener("abort", () =>
-        removeEventListener(type, listener, options)
+        removeEventListener(type, listener, options),
       );
     }
   };
@@ -101,7 +101,7 @@ function installUnsafeNavigation(): Navigation {
   const removeEventListener: (
     type: string,
     listener: EventListener,
-    options?: boolean | AddEventListenerOptions | undefined
+    options?: boolean | AddEventListenerOptions | undefined,
   ) => void = (type, listener, options) => {
     if (!listener) return;
     const listeners = listenersMap.get(type);
