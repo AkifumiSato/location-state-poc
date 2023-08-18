@@ -9,6 +9,7 @@ export function List() {
     storeName: "session",
   });
   const list = Array(displayList ? 100 : 0).fill(0);
+  console.debug("rendered List", { displayList });
 
   return (
     <div>

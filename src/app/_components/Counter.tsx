@@ -8,6 +8,7 @@ export function Counter() {
     defaultValue: 0,
     storeName: "session",
   });
+  console.debug("rendered Counter", { counter });
 
   return (
     <div>
