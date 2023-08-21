@@ -1,9 +1,10 @@
 import { Syncer } from "@/lib/locationState/syncers/types";
+import { NextRouter } from "next/router";
 
 export class NextPagesSyncer implements Syncer {
   private readonly listeners = new Set<(key: string) => void>();
 
-  constructor() {}
+  constructor(private readonly router: NextRouter) {}
 
   key(): string | undefined {
     return globalThis.history.state.key;
@@ -28,7 +29,6 @@ export class NextPagesSyncer implements Syncer {
   }
 
   updateURL(url: string): void {
-    // not implemented
-    // todo: updateURL自体必要か見直し
+    this.router.replace(url, undefined, { shallow: true });
   }
 }
