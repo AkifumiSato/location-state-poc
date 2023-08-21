@@ -19,8 +19,8 @@ export default function Page({ id }: Props) {
       <p>
         <Link href={nextUrl}>{nextUrl}</Link>
       </p>
-      <Counter />
-      <List />
+      <Counter storeName="session" />
+      <List storeName="session" />
     </div>
   );
 }

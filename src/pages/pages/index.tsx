@@ -18,8 +18,8 @@ export default function Page() {
           <Link href="/pages/ssg/1">/pages/ssg/1</Link>
         </li>
       </ul>
-      <Counter />
-      <List />
+      <Counter storeName="session" />
+      <List storeName="session" />
     </div>
   );
 }

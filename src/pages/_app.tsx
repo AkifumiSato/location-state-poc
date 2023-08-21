@@ -1,14 +1,11 @@
+import { useNextPagesSyncer } from "@/lib/locationState/pages-router/hooks";
 import { LocationStateProvider } from "@/lib/locationState/Provider";
-import { NextPagesSyncer } from "@/lib/locationState/syncers/next-pages/next-pages-syncer";
 import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
-import { useState } from "react";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-  const [nextSyncer] = useState(() => new NextPagesSyncer(router));
+  const syncer = useNextPagesSyncer();
   return (
-    <LocationStateProvider syncer={nextSyncer}>
+    <LocationStateProvider syncer={syncer}>
       <Component {...pageProps} />
     </LocationStateProvider>
   );

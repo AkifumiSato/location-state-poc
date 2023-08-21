@@ -9,8 +9,8 @@ export default function Page() {
       <p>
         <Link href="/pages">/pages</Link>
       </p>
-      <Counter />
-      <List />
+      <Counter storeName="session" />
+      <List storeName="session" />
     </div>
   );
 }
