@@ -9,7 +9,7 @@ export function Counter({ storeName }: { storeName: StoreName }) {
     defaultValue: 0,
     storeName,
   });
-  console.debug("rendered Counter", { counter });
+  console.debug("rendered Counter", { storeName, counter });
 
   return (
     <div>

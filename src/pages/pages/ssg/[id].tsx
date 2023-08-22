@@ -8,10 +8,10 @@ type Props = {
 };
 
 export default function Page({ id }: Props) {
-  const nextUrl = `/pages/ssr/${id + 1}`;
+  const nextUrl = `/pages/ssg/${id + 1}`;
   return (
     <div>
-      <h1>SSR Page</h1>
+      <h1>SSG Page</h1>
       <p>id: {id}</p>
       <p>
         <Link href="/pages">/pages</Link>
