@@ -1,9 +1,8 @@
-import { Counter } from "@/app/_components/Counter";
-import { List } from "@/app/_components/List";
+import { Counter } from "@/components/Counter";
+import { List } from "@/components/List";
 import Link from "next/link";
 
 export default function Page() {
-  // todo: List/Counter move to `src/components`
   return (
     <div>
       <h1>Page</h1>
