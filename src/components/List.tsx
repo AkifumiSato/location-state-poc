@@ -10,6 +10,7 @@ export function List({ storeName }: { storeName: StoreName }) {
     storeName,
   });
   const list = Array(displayList ? 100 : 0).fill(0);
+  console.debug("rendered List", { storeName, displayList });
 
   return (
     <div>

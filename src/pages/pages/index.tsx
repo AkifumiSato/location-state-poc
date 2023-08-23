@@ -4,23 +4,23 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <main>
-      <h1>Top page</h1>
+    <div>
+      <h1>Page</h1>
       <ul>
         <li>
-          <Link href="/static">/static</Link>
+          <Link href="/pages/other">/pages/other</Link>
         </li>
         <li>
-          <Link href="/dynamic">/dynamic</Link>
+          <Link href="/pages/ssr/1">/pages/ssr/1</Link>
         </li>
         <li>
-          <Link href="/pages">/pages</Link>
+          <Link href="/pages/ssg/1">/pages/ssg/1</Link>
         </li>
       </ul>
       <Counter storeName="session" />
       <Counter storeName="url" />
       <List storeName="session" />
       <List storeName="url" />
-    </main>
+    </div>
   );
 }
