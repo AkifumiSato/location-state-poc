@@ -8,6 +8,9 @@ export default function Page() {
       <h1>Top page</h1>
       <ul>
         <li>
+          <Link href="/use_state">/use_state</Link>
+        </li>
+        <li>
           <Link href="/static">/static</Link>
         </li>
         <li>
